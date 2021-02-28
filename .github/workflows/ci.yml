@@ -1,0 +1,56 @@
+name: Docker build
+on: 
+  push:
+    branches:
+      - main
+
+jobs:
+  build-cli:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: PHP CLI build  
+        uses: aevea/action-kaniko@master
+        with:
+          registry: ghcr.io
+          image: aevea/kaniko
+          username: ${{ secrets.GHCR_USR }}
+          password: ${{ secrets.GHCR_PAT }}
+          path: cli/
+          tag: ghcr.io/digital-entropy/dokar-php/cli:8.0
+          cache: true
+          cache_registry: aevea/cache
+
+  build-fpm:
+    needs: build-cli
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: PHP CLI build  
+        uses: aevea/action-kaniko@master
+        with:
+          registry: ghcr.io
+          image: aevea/kaniko
+          username: ${{ secrets.GHCR_USR }}
+          password: ${{ secrets.GHCR_PAT }}
+          path: cli/
+          tag: ghcr.io/digital-entropy/dokar-php/fpm:8.0
+          cache: true
+          cache_registry: aevea/cache
+
+  build-nginx:
+    needs: build-fpm
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: PHP CLI build  
+        uses: aevea/action-kaniko@master
+        with:
+          registry: ghcr.io
+          image: aevea/kaniko
+          username: ${{ secrets.GHCR_USR }}
+          password: ${{ secrets.GHCR_PAT }}
+          path: cli/
+          tag: ghcr.io/digital-entropy/dokar-php/nginx:8.0
+          cache: true
+          cache_registry: aevea/cache
