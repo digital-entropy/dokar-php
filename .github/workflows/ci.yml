@@ -12,10 +12,10 @@ jobs:
       - name: PHP CLI build  
         uses: aevea/action-kaniko@master
         with:
-          registry: ghcr.io
-          image: aevea/kaniko
           username: ${{ secrets.GHCR_USR }}
           password: ${{ secrets.GHCR_PAT }}
+          registry: ghcr.io
+          image: aevea/kaniko
           path: cli/
           tag: ghcr.io/digital-entropy/dokar-php/cli:8.0
           cache: true
@@ -26,13 +26,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - name: PHP CLI build  
+      - name: PHP FPM build  
         uses: aevea/action-kaniko@master
         with:
-          registry: ghcr.io
-          image: aevea/kaniko
           username: ${{ secrets.GHCR_USR }}
           password: ${{ secrets.GHCR_PAT }}
+          registry: ghcr.io
+          image: aevea/kaniko
           path: cli/
           tag: ghcr.io/digital-entropy/dokar-php/fpm:8.0
           cache: true
@@ -43,13 +43,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - name: PHP CLI build  
+      - name: PHP NGINX build  
         uses: aevea/action-kaniko@master
         with:
-          registry: ghcr.io
-          image: aevea/kaniko
           username: ${{ secrets.GHCR_USR }}
           password: ${{ secrets.GHCR_PAT }}
+          registry: ghcr.io
+          image: aevea/kaniko
           path: cli/
           tag: ghcr.io/digital-entropy/dokar-php/nginx:8.0
           cache: true
