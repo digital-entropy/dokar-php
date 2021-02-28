@@ -2,7 +2,7 @@ name: Docker build
 on: 
   push:
     branches:
-      - "7.4"
+      - "7.3"
 
 jobs:
   build-cli:
@@ -17,7 +17,7 @@ jobs:
           password: ${{ secrets.GHCR_PAT }}
           path: cli/
           image: digital-entropy/dokar-php/cli
-          tag: "7.4"
+          tag: "7.3"
 
   build-fpm:
     needs: build-cli
@@ -32,7 +32,7 @@ jobs:
           password: ${{ secrets.GHCR_PAT }}
           path: fpm/
           image: digital-entropy/dokar-php/fpm
-          tag: "7.4"
+          tag: "7.3"
 
   build-nginx:
     needs: build-fpm
@@ -47,4 +47,4 @@ jobs:
           password: ${{ secrets.GHCR_PAT }}
           path: nginx/
           image: digital-entropy/dokar-php/nginx
-          tag: "7.4"
+          tag: "7.3"
