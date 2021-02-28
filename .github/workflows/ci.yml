@@ -16,7 +16,7 @@ jobs:
           username: ${{ secrets.GHCR_USR }}
           password: ${{ secrets.GHCR_PAT }}
           path: cli/
-          image: ghcr.io/digital-entropy/dokar-php/cli
+          image: digital-entropy/dokar-php/cli
           tag: 8.0
 
   build-fpm:
@@ -31,7 +31,7 @@ jobs:
           username: ${{ secrets.GHCR_USR }}
           password: ${{ secrets.GHCR_PAT }}
           path: fpm/
-          image: ghcr.io/digital-entropy/dokar-php/fpm
+          image: digital-entropy/dokar-php/fpm
           tag: 8.0
 
   build-nginx:
@@ -46,5 +46,5 @@ jobs:
           username: ${{ secrets.GHCR_USR }}
           password: ${{ secrets.GHCR_PAT }}
           path: nginx/
-          image: ghcr.io/digital-entropy/dokar-php/nginx
+          image: digital-entropy/dokar-php/nginx
           tag: 8.0
