@@ -1,6 +1,6 @@
-FROM ghcr.io/digital-entropy/dokar-php/fpm:7.4
+FROM ghcr.io/digital-entropy/dokar-php/fpm:7.2
 
-LABEL org.opencontainers.image.source https://github.com/digital-entropy/dokar-php/tree/7.4
+LABEL org.opencontainers.image.source https://github.com/digital-entropy/dokar-php/tree/7.2
 
 RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
@@ -31,8 +31,8 @@ ENV PGID ${PGID}
 RUN groupadd -g ${PGID} ${USER} && \
     useradd --gid ${PGID} --uid ${PUID} ${USER}
 
-RUN sed -i "/^\[www\]/a group=${USER}" /etc/php/7.4/fpm/pool.d/z-overrides.conf && \
-    sed -i "/^\[www\]/a user=${USER}" /etc/php/7.4/fpm/pool.d/z-overrides.conf
+RUN sed -i "/^\[www\]/a group=${USER}" /etc/php/7.2/fpm/pool.d/z-overrides.conf && \
+    sed -i "/^\[www\]/a user=${USER}" /etc/php/7.2/fpm/pool.d/z-overrides.conf
 
 EXPOSE 80
 
