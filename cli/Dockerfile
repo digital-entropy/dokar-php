@@ -1,6 +1,6 @@
 FROM ubuntu:focal
 
-LABEL org.opencontainers.image.source https://github.com/digital-entropy/dokar-php/tree/7.4
+LABEL org.opencontainers.image.source https://github.com/digital-entropy/dokar-php/tree/7.1
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -29,21 +29,21 @@ RUN apt-get update \
         unzip \
         openssh-server \
         git \
-        php7.4-cli \
-        php7.4-curl \
-        php7.4-mbstring \
-        php7.4-opcache \
-        php7.4-readline \
-        php7.4-xml \
-        php7.4-zip \
-        php7.4-bcmath \
-        php7.4-mysql \
-        php7.4-pgsql \
-        php7.4-redis \
-        php7.4-gd \
-        php7.4-sqlite3 \
-        php7.4-soap \
-        php7.4-xdebug \
+        php7.1-cli \
+        php7.1-curl \
+        php7.1-mbstring \
+        php7.1-opcache \
+        php7.1-readline \
+        php7.1-xml \
+        php7.1-zip \
+        php7.1-bcmath \
+        php7.1-mysql \
+        php7.1-pgsql \
+        php7.1-redis \
+        php7.1-gd \
+        php7.1-sqlite3 \
+        php7.1-soap \
+        php7.1-xdebug \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && composer global require --quiet --no-ansi laravel/envoy \
     && composer clear-cache --quiet \
