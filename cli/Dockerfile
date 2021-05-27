@@ -56,7 +56,7 @@ RUN apt-get update \
     && pecl channel-update https://pecl.php.net/channel.xml \
     && pecl install swoole \
     && pecl clear-cache \
-    && apt remove -y build-essential \
+    && apt autoremove -y build-essential \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/* \
     && ln -s /root/.composer/vendor/laravel/envoy/bin/envoy /usr/bin/envoy
