@@ -45,7 +45,6 @@ RUN apt-get update \
         php8.0-soap \
         php8.0-xdebug \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
-    && 
     && composer global require --quiet --no-ansi laravel/envoy \
     && composer clear-cache --quiet \
     && apt-get clean
