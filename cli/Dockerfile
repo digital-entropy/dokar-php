@@ -27,7 +27,7 @@ RUN apt-get update \
         ca-certificates \
         curl \
         unzip \
-        openssh-server \
+        openssh-client \
         git \
         php8.0-cli \
         php8.0-dev \
@@ -49,6 +49,7 @@ RUN apt-get update \
         php8.0-msgpack \
         php8.0-xdebug \
         php-pear \
+        g++ \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && composer global require --quiet --no-ansi laravel/envoy \
     && composer clear-cache --quiet \
@@ -60,4 +61,5 @@ RUN pecl channel-update https://pecl.php.net/channel.xml \
     && pecl install swoole \
     && pecl clear-cache
 
+RUN apt remove -y g++
 RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
