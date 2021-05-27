@@ -20,6 +20,7 @@ RUN apt-get update \
     && echo "deb http://ppa.launchpad.net/ondrej/php/ubuntu focal main" > /etc/apt/sources.list.d/ppa_ondrej_php.list \
     && apt-get update \
     && apt-get -y --no-install-recommends install \
+        build-essential \
         sqlite3 \ 
         libsqlite3-dev \
         dialog \
@@ -49,7 +50,6 @@ RUN apt-get update \
         php8.0-msgpack \
         php8.0-xdebug \
         php-pear \
-        g++ \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && composer global require --quiet --no-ansi laravel/envoy \
     && composer clear-cache --quiet \
@@ -61,5 +61,5 @@ RUN pecl channel-update https://pecl.php.net/channel.xml \
     && pecl install swoole \
     && pecl clear-cache
 
-RUN apt remove -y g++
+RUN apt remove -y build-essential
 RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
