@@ -30,6 +30,7 @@ RUN apt-get update \
         openssh-server \
         git \
         php8.0-cli \
+        php8.0-dev \
         php8.0-curl \
         php8.0-mbstring \
         php8.0-opcache \
