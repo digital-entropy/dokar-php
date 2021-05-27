@@ -45,9 +45,15 @@ RUN apt-get update \
         php8.0-soap \
         php8.0-xdebug \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+    && 
     && composer global require --quiet --no-ansi laravel/envoy \
     && composer clear-cache --quiet \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/* 
+    && apt-get clean
 
 RUN ln -s /root/.composer/vendor/laravel/envoy/bin/envoy /usr/bin/envoy
+
+RUN pecl channel-update https://pecl.php.net/channel.xml \
+    && pecl install swoole \
+    && pecl clear-cache
+
+RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
