@@ -40,10 +40,13 @@ RUN apt-get update \
         php8.0-bcmath \
         php8.0-mysql \
         php8.0-pgsql \
+        php8.0-igbinary \
         php8.0-redis \
         php8.0-gd \
         php8.0-sqlite3 \
         php8.0-soap \
+        php8.0-intl \
+        php8.0-msgpack \
         php8.0-xdebug \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && composer global require --quiet --no-ansi laravel/envoy \
