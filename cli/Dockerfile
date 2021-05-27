@@ -48,6 +48,7 @@ RUN apt-get update \
         php8.0-intl \
         php8.0-msgpack \
         php8.0-xdebug \
+        php-pear \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && composer global require --quiet --no-ansi laravel/envoy \
     && composer clear-cache --quiet \
