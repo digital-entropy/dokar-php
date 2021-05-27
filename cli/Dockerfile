@@ -53,13 +53,10 @@ RUN apt-get update \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && composer global require --quiet --no-ansi laravel/envoy \
     && composer clear-cache --quiet \
-    && apt-get clean
-
-RUN ln -s /root/.composer/vendor/laravel/envoy/bin/envoy /usr/bin/envoy
-
-RUN pecl channel-update https://pecl.php.net/channel.xml \
+    && pecl channel-update https://pecl.php.net/channel.xml \
     && pecl install swoole \
     && pecl clear-cache
-
-RUN apt remove -y build-essential
-RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
+    && apt remove -y build-essential
+    && apt-get clean
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
+    && ln -s /root/.composer/vendor/laravel/envoy/bin/envoy /usr/bin/envoy
