@@ -24,8 +24,8 @@ RUN apt-get update \
         sqlite3 \ 
         libsqlite3-dev \
         dialog \
-        apt-utils \
         ca-certificates \
+        apt-utils \
         curl \
         unzip \
         openssh-client \
