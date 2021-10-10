@@ -1,5 +1,7 @@
 FROM ghcr.io/digital-entropy/dokar-php/cli:8.0
 
+LABEL org.opencontainers.image.source https://github.com/digital-entropy/dokar-php
+
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4F4EA0AAE5267A6C \
     && apt-get update \
     && apt-get -y --no-install-recommends install \
