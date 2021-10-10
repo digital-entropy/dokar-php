@@ -34,6 +34,21 @@ jobs:
           image: digital-entropy/dokar-php/fpm
           tag: "8.0"
 
+  build-octane:
+    needs: build-cli
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: PHP (with swoole) build for Laravel Octane usage  
+        uses: aevea/action-kaniko@master
+        with:
+          registry: ghcr.io
+          username: ${{ secrets.GHCR_USR }}
+          password: ${{ secrets.GHCR_PAT }}
+          path: fpm/
+          image: digital-entropy/dokar-php/octane
+          tag: "8.0"
+
   build-nginx:
     needs: build-fpm
     runs-on: ubuntu-latest
