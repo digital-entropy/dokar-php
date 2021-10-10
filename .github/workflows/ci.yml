@@ -45,7 +45,7 @@ jobs:
           registry: ghcr.io
           username: ${{ secrets.GHCR_USR }}
           password: ${{ secrets.GHCR_PAT }}
-          path: fpm/
+          path: octane/
           image: digital-entropy/dokar-php/octane
           tag: "8.0"
 
