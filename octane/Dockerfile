@@ -11,7 +11,7 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4F4EA0AAE5267A6C \
     && curl -sL https://deb.nodesource.com/setup_lts.x | bash - \
     && apt install nodejs -y \
     && pecl channel-update https://pecl.php.net/channel.xml \
-    && pecl install swoole \
+    && pecl install openswoole \
     && pecl clear-cache \
     # cleaning...
     && apt autoremove -y build-essential \
