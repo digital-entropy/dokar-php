@@ -36,4 +36,7 @@ EXPOSE 80
 
 WORKDIR /var/www
 
-CMD "runuser" "-l" $USER_CONTAINER "-c" "/runner.sh"
+ARG DOCKER_ENV=production
+ENV DOCKER_ENV ${DOCKER_ENV}
+
+CMD "runuser" "-l" $USER_CONTAINER "-c" "/runner.sh $DOCKER_ENV"
