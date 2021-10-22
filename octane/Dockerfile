@@ -14,7 +14,6 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4F4EA0AAE5267A6C \
     && pecl install openswoole \
     && pecl clear-cache \
     # cleaning...
-    && apt autoremove -y build-essential \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/* 
 
