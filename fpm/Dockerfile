@@ -1,11 +1,11 @@
-FROM ghcr.io/digital-entropy/dokar-php/cli:8.0
+FROM ghcr.io/digital-entropy/dokar-php/cli:8.1
 
 LABEL org.opencontainers.image.source https://github.com/digital-entropy/dokar-php
 
 # Install FPM
 RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
-    && apt-get -y --no-install-recommends install php8.0-fpm \
+    && apt-get -y --no-install-recommends install php8.1-fpm \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 

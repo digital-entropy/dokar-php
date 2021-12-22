@@ -1,4 +1,4 @@
-FROM ghcr.io/digital-entropy/dokar-php/cli:8.0
+FROM ghcr.io/digital-entropy/dokar-php/cli:8.1
 
 LABEL org.opencontainers.image.source https://github.com/digital-entropy/dokar-php
 

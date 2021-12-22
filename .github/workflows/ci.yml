@@ -17,7 +17,7 @@ jobs:
           password: ${{ secrets.GHCR_PAT }}
           path: cli/
           image: digital-entropy/dokar-php/cli
-          tag: "8.0"
+          tag: "8.1"
 
   build-fpm:
     needs: build-cli
@@ -32,7 +32,7 @@ jobs:
           password: ${{ secrets.GHCR_PAT }}
           path: fpm/
           image: digital-entropy/dokar-php/fpm
-          tag: "8.0"
+          tag: "8.1"
 
   build-octane:
     needs: build-cli
@@ -47,7 +47,7 @@ jobs:
           password: ${{ secrets.GHCR_PAT }}
           path: octane/
           image: digital-entropy/dokar-php/octane
-          tag: "8.0"
+          tag: "8.1"
 
   build-nginx:
     needs: build-fpm
@@ -62,4 +62,4 @@ jobs:
           password: ${{ secrets.GHCR_PAT }}
           path: nginx/
           image: digital-entropy/dokar-php/nginx
-          tag: "8.0"
+          tag: "8.1"

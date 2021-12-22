@@ -29,25 +29,25 @@ RUN apt-get update \
         unzip \
         openssh-client \
         git \
-        php8.0-cli \
-        php8.0-dev \
-        php8.0-curl \
-        php8.0-mbstring \
-        php8.0-opcache \
-        php8.0-readline \
-        php8.0-xml \
-        php8.0-zip \
-        php8.0-bcmath \
-        php8.0-mysql \
-        php8.0-pgsql \
-        php8.0-igbinary \
-        php8.0-redis \
-        php8.0-gd \
-        php8.0-sqlite3 \
-        php8.0-soap \
-        php8.0-intl \
-        php8.0-msgpack \
-        php8.0-xdebug \
+        php8.1-cli \
+        php8.1-dev \
+        php8.1-curl \
+        php8.1-mbstring \
+        php8.1-opcache \
+        php8.1-readline \
+        php8.1-xml \
+        php8.1-zip \
+        php8.1-bcmath \
+        php8.1-mysql \
+        php8.1-pgsql \
+        php8.1-igbinary \
+        php8.1-redis \
+        php8.1-gd \
+        php8.1-sqlite3 \
+        php8.1-soap \
+        php8.1-intl \
+        php8.1-msgpack \
+        php8.1-xdebug \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && composer global require --quiet --no-ansi laravel/envoy \
     && composer clear-cache --quiet \
