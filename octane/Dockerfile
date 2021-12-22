@@ -17,7 +17,7 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4F4EA0AAE5267A6C \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/* 
 
-COPY 20-openswoole.ini /etc/php/8.0/cli/conf.d/20-openswoole.ini
+COPY 20-openswoole.ini /etc/php/8.1/cli/conf.d/20-openswoole.ini
 COPY runner.sh /runner.sh
 
 # Add a non-root user to prevent files being created with root permissions on host machine.
