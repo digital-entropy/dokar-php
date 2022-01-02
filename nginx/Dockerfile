@@ -28,10 +28,10 @@ ONBUILD ENV PUID ${PUID}
 ONBUILD ARG PGID=1000
 ONBUILD ENV PGID ${PGID}
 
-RUN groupadd -g ${PGID} ${USER} && \
+ONBUILD RUN groupadd -g ${PGID} ${USER_CONTAINER} && \
     useradd --gid ${PGID} --uid ${PUID} -m ${USER_CONTAINER}
 
-RUN sed -i "/^\[www\]/a group=${USER}" /etc/php/7.4/fpm/pool.d/z-overrides.conf && \
+ONBUILD RUN sed -i "/^\[www\]/a group=${USER}" /etc/php/7.4/fpm/pool.d/z-overrides.conf && \
     sed -i "/^\[www\]/a user=${USER}" /etc/php/7.4/fpm/pool.d/z-overrides.conf
 
 EXPOSE 80
