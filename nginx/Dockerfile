@@ -21,15 +21,15 @@ COPY site.conf /etc/nginx/sites-enabled
 COPY supervisor /etc/supervisor
 
 # Add a non-root user to prevent files being created with root permissions on host machine.
-ARG USER=dokar
-ENV USER ${USER}
-ARG PUID=1000
-ENV PUID ${PUID}
-ARG PGID=1000
-ENV PGID ${PGID}
+ONBUILD ARG USER_CONTAINER=dokar
+ONBUILD ENV USER_CONTAINER ${USER_CONTAINER}
+ONBUILD ARG PUID=1000
+ONBUILD ENV PUID ${PUID}
+ONBUILD ARG PGID=1000
+ONBUILD ENV PGID ${PGID}
 
 RUN groupadd -g ${PGID} ${USER} && \
-    useradd --gid ${PGID} --uid ${PUID} ${USER}
+    useradd --gid ${PGID} --uid ${PUID} -m ${USER_CONTAINER}
 
 RUN sed -i "/^\[www\]/a group=${USER}" /etc/php/7.4/fpm/pool.d/z-overrides.conf && \
     sed -i "/^\[www\]/a user=${USER}" /etc/php/7.4/fpm/pool.d/z-overrides.conf
