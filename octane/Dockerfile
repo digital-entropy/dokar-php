@@ -22,14 +22,15 @@ COPY 20-openswoole.ini /etc/php/8.1/cli/conf.d/20-openswoole.ini
 COPY runner.sh /runner.sh
 
 # Add a non-root user to prevent files being created with root permissions on host machine.
-ONBUILD ARG USER_CONTAINER=dokar
+ONBUILD ARG USER_CONTAINER=dokar    
 ONBUILD ENV USER_CONTAINER ${USER_CONTAINER}
 ONBUILD ARG PUID=1000
 ONBUILD ENV PUID ${PUID}
 ONBUILD ARG PGID=1000
 ONBUILD ENV PGID ${PGID}
 
-ONBUILD RUN groupadd -g ${PGID} ${USER_CONTAINER} && \
+
+ONBUILD RUN if ! grep -q $PGID /etc/group; then groupadd -g ${PGID} ${USER_CONTAINER}; fi && \
     useradd --gid ${PGID} --uid ${PUID} -m ${USER_CONTAINER}
 
 EXPOSE 80
