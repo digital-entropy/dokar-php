@@ -28,7 +28,7 @@ ONBUILD ENV PUID ${PUID}
 ONBUILD ARG PGID=1000
 ONBUILD ENV PGID ${PGID}
 
-ONBUILD RUN groupadd -g ${PGID} ${USER_CONTAINER} && \
+ONBUILD RUN if ! grep -q $PGID /etc/group; then groupadd -g ${PGID} ${USER_CONTAINER}; fi && \
     useradd --gid ${PGID} --uid ${PUID} -m ${USER_CONTAINER}
 
 ONBUILD RUN sed -i "/^\[www\]/a group=${USER_CONTAINER}" /etc/php/8.1/fpm/pool.d/z-overrides.conf && \
