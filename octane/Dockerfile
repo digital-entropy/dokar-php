@@ -10,7 +10,7 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4F4EA0AAE5267A6C \
     # octane use chokidar for --watch option so we need to install nodejs
     && curl -sL https://deb.nodesource.com/setup_16.x | bash - \
     && apt install nodejs -y \
-    && npm install -g chokidar \
+    && npm install -g chokidar pnpm \
     && pecl channel-update https://pecl.php.net/channel.xml \
     && pecl install openswoole \
     && pecl clear-cache \
