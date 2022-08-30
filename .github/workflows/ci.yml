@@ -16,7 +16,7 @@ jobs:
           username: ${{ secrets.GHCR_USR }}
           password: ${{ secrets.GHCR_PAT }}
           path: cli/
-          image: digital-entropy/dokar-php/cli
+          image: cli
           tag: "8.1"
           cache: true
           cache_registry: cache
@@ -33,7 +33,7 @@ jobs:
           username: ${{ secrets.GHCR_USR }}
           password: ${{ secrets.GHCR_PAT }}
           path: fpm/
-          image: digital-entropy/dokar-php/fpm
+          image: fpm
           tag: "8.1"
           cache: true
           cache_registry: cache
@@ -50,7 +50,7 @@ jobs:
           username: ${{ secrets.GHCR_USR }}
           password: ${{ secrets.GHCR_PAT }}
           path: octane/
-          image: digital-entropy/dokar-php/octane
+          image: octane
           tag: "8.1"
           cache: true
           cache_registry: cache
@@ -67,7 +67,7 @@ jobs:
           username: ${{ secrets.GHCR_USR }}
           password: ${{ secrets.GHCR_PAT }}
           path: nginx/
-          image: digital-entropy/dokar-php/nginx
+          image: nginx
           tag: "8.1"
           cache: true
           cache_registry: cache
