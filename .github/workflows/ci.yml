@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: PHP CLI build  
-        uses: aevea/action-kaniko@v0.8.0
+        uses: aevea/action-kaniko@master
         with:
           registry: ghcr.io
           username: ${{ secrets.GHCR_USR }}
@@ -18,6 +18,8 @@ jobs:
           path: cli/
           image: digital-entropy/dokar-php/cli
           tag: "8.1"
+          cache: true
+          cache_registry: cache
 
   build-fpm:
     needs: build-cli
@@ -25,7 +27,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: PHP FPM build  
-        uses: aevea/action-kaniko@v0.8.0
+        uses: aevea/action-kaniko@master
         with:
           registry: ghcr.io
           username: ${{ secrets.GHCR_USR }}
@@ -33,6 +35,8 @@ jobs:
           path: fpm/
           image: digital-entropy/dokar-php/fpm
           tag: "8.1"
+          cache: true
+          cache_registry: cache
 
   build-octane:
     needs: build-cli
@@ -40,7 +44,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: PHP (with swoole) build for Laravel Octane usage  
-        uses: aevea/action-kaniko@v0.8.0
+        uses: aevea/action-kaniko@master
         with:
           registry: ghcr.io
           username: ${{ secrets.GHCR_USR }}
@@ -48,6 +52,8 @@ jobs:
           path: octane/
           image: digital-entropy/dokar-php/octane
           tag: "8.1"
+          cache: true
+          cache_registry: cache
 
   build-nginx:
     needs: build-fpm
@@ -55,7 +61,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: PHP NGINX build  
-        uses: aevea/action-kaniko@v0.8.0
+        uses: aevea/action-kaniko@master
         with:
           registry: ghcr.io
           username: ${{ secrets.GHCR_USR }}
@@ -63,3 +69,5 @@ jobs:
           path: nginx/
           image: digital-entropy/dokar-php/nginx
           tag: "8.1"
+          cache: true
+          cache_registry: cache
