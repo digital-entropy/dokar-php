@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: PHP CLI build  
-        uses: aevea/action-kaniko@master
+        uses: aevea/action-kaniko@v0.8.0
         with:
           registry: ghcr.io
           username: ${{ secrets.GHCR_USR }}
@@ -25,7 +25,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: PHP FPM build  
-        uses: aevea/action-kaniko@master
+        uses: aevea/action-kaniko@v0.8.0
         with:
           registry: ghcr.io
           username: ${{ secrets.GHCR_USR }}
@@ -40,7 +40,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: PHP (with swoole) build for Laravel Octane usage  
-        uses: aevea/action-kaniko@master
+        uses: aevea/action-kaniko@v0.8.0
         with:
           registry: ghcr.io
           username: ${{ secrets.GHCR_USR }}
@@ -55,7 +55,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: PHP NGINX build  
-        uses: aevea/action-kaniko@master
+        uses: aevea/action-kaniko@v0.8.0
         with:
           registry: ghcr.io
           username: ${{ secrets.GHCR_USR }}
