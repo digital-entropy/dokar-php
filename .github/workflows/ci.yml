@@ -17,7 +17,7 @@ jobs:
           password: ${{ secrets.GHCR_PAT }}
           path: cli/
           image: cli
-          tag: "8.1"
+          tag: "8.2"
           cache: true
           cache_registry: cache
 
@@ -34,7 +34,7 @@ jobs:
           password: ${{ secrets.GHCR_PAT }}
           path: fpm/
           image: fpm
-          tag: "8.1"
+          tag: "8.2"
           cache: true
           cache_registry: cache
 
@@ -51,7 +51,7 @@ jobs:
           password: ${{ secrets.GHCR_PAT }}
           path: octane/
           image: octane
-          tag: "8.1"
+          tag: "8.2"
           cache: true
           cache_registry: cache
 
@@ -68,6 +68,6 @@ jobs:
           password: ${{ secrets.GHCR_PAT }}
           path: nginx/
           image: nginx
-          tag: "8.1"
+          tag: "8.2"
           cache: true
           cache_registry: cache
