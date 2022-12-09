@@ -2,7 +2,7 @@ name: Docker build
 on: 
   push:
     branches:
-      - main
+      - 8.1
 
 jobs:
   build-cli:
