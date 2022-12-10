@@ -6,7 +6,7 @@ on:
 
 jobs:
   build-cli:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@master
       - name: PHP CLI build  
@@ -23,7 +23,7 @@ jobs:
 
   build-fpm:
     needs: build-cli
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@master
       - name: PHP FPM build  
@@ -40,7 +40,7 @@ jobs:
 
   build-octane:
     needs: build-cli
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@master
       - name: PHP (with swoole) build for Laravel Octane usage  
@@ -57,7 +57,7 @@ jobs:
 
   build-nginx:
     needs: build-fpm
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@master
       - name: PHP NGINX build  
