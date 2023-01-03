@@ -12,7 +12,7 @@ RUN apt-get update \
     && npm install -g chokidar pnpm 
 
 RUN pecl channel-update https://pecl.php.net/channel.xml
-RUN pecl install swoole igbinary redis 
+RUN pecl install swoole
 
 COPY 20-extra.ini /etc/php/8.2/cli/conf.d/20-extra.ini
 COPY runner.sh /runner.sh

@@ -4,8 +4,6 @@ LABEL org.opencontainers.image.source https://github.com/digital-entropy/dokar-p
 
 RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
-    && apt-get install software-properties-common -y \
-    && add-apt-repository -y ppa:nginx/stable \
     && apt-get update \
     && apt-get install nginx supervisor -y \ 
     && rm /etc/nginx/sites-enabled/*
