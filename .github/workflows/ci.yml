@@ -8,66 +8,90 @@ jobs:
   build-cli:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@master
-      - name: PHP CLI build  
-        uses: aevea/action-kaniko@master
+      -
+        name: Checkout
+        uses: actions/checkout@v3
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      -
+        name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ secrets.GHCR_USR }}
           password: ${{ secrets.GHCR_PAT }}
-          path: cli/
-          image: cli
-          tag: "8.2"
-          cache: true
-          cache_registry: cache
+      -
+        name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          platform: linux/arm64,linux/arm/v8
+          push: true
+          tags: ghcr.io/digital-entropy/dokar-php/cli:8.2
 
-  build-fpm:
-    needs: build-cli
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@master
-      - name: PHP FPM build  
-        uses: aevea/action-kaniko@master
-        with:
-          registry: ghcr.io
-          username: ${{ secrets.GHCR_USR }}
-          password: ${{ secrets.GHCR_PAT }}
-          path: fpm/
-          image: fpm
-          tag: "8.2"
-          cache: true
-          cache_registry: cache
+      # - name: PHP CLI build  
+      #   uses: aevea/action-kaniko@master
+      #   with:
+      #     registry: ghcr.io
+      #     username: ${{ secrets.GHCR_USR }}
+      #     password: ${{ secrets.GHCR_PAT }}
+      #     path: cli/
+      #     image: cli
+      #     tag: "8.2"
+      #     cache: true
+      #     cache_registry: cache
 
-  build-octane:
-    needs: build-cli
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@master
-      - name: PHP (with swoole) build for Laravel Octane usage  
-        uses: aevea/action-kaniko@master
-        with:
-          registry: ghcr.io
-          username: ${{ secrets.GHCR_USR }}
-          password: ${{ secrets.GHCR_PAT }}
-          path: octane/
-          image: octane
-          tag: "8.2"
-          cache: true
-          cache_registry: cache
+  # build-fpm:
+  #   needs: build-cli
+  #   runs-on: ubuntu-22.04
+  #   steps:
+  #     - uses: actions/checkout@master
+  #     - name: PHP FPM build  
+  #       uses: aevea/action-kaniko@master
+  #       with:
+  #         registry: ghcr.io
+  #         username: ${{ secrets.GHCR_USR }}
+  #         password: ${{ secrets.GHCR_PAT }}
+  #         path: fpm/
+  #         image: fpm
+  #         tag: "8.2"
+  #         cache: true
+  #         cache_registry: cache
 
-  build-nginx:
-    needs: build-fpm
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@master
-      - name: PHP NGINX build  
-        uses: aevea/action-kaniko@master
-        with:
-          registry: ghcr.io
-          username: ${{ secrets.GHCR_USR }}
-          password: ${{ secrets.GHCR_PAT }}
-          path: nginx/
-          image: nginx
-          tag: "8.2"
-          cache: true
-          cache_registry: cache
+  # build-octane:
+  #   needs: build-cli
+  #   runs-on: ubuntu-22.04
+  #   steps:
+  #     - uses: actions/checkout@master
+  #     - name: PHP (with swoole) build for Laravel Octane usage  
+  #       uses: aevea/action-kaniko@master
+  #       with:
+  #         registry: ghcr.io
+  #         username: ${{ secrets.GHCR_USR }}
+  #         password: ${{ secrets.GHCR_PAT }}
+  #         path: octane/
+  #         image: octane
+  #         tag: "8.2"
+  #         cache: true
+  #         cache_registry: cache
+
+  # build-nginx:
+  #   needs: build-fpm
+  #   runs-on: ubuntu-22.04
+  #   steps:
+  #     - uses: actions/checkout@master
+  #     - name: PHP NGINX build  
+  #       uses: aevea/action-kaniko@master
+  #       with:
+  #         registry: ghcr.io
+  #         username: ${{ secrets.GHCR_USR }}
+  #         password: ${{ secrets.GHCR_PAT }}
+  #         path: nginx/
+  #         image: nginx
+  #         tag: "8.2"
+  #         cache: true
+  #         cache_registry: cache
