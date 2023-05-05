@@ -31,7 +31,7 @@ ONBUILD ARG PGID=1000
 ONBUILD ENV PGID ${PGID}
 
 ONBUILD RUN if ! grep -q $PGID /etc/group; then groupadd -g ${PGID} ${USER_CONTAINER}; fi && \
-    useradd --gid ${PGID} --uid ${PUID} -m ${USER_CONTAINER}
+    if ! grep -q $PUID /etc/passwd; then useradd --gid ${PGID} --uid ${PUID} -m ${USER_CONTAINER}; fi
 
 EXPOSE 80
 
