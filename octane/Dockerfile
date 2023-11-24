@@ -1,4 +1,4 @@
-FROM ghcr.io/digital-entropy/dokar-php/cli:8.2
+FROM ghcr.io/digital-entropy/dokar-php/cli:8.3
 
 LABEL org.opencontainers.image.source https://github.com/digital-entropy/dokar-php
 
@@ -14,7 +14,7 @@ RUN apt-get update \
 RUN pecl channel-update https://pecl.php.net/channel.xml
 RUN pecl install swoole
 
-COPY 20-extra.ini /etc/php/8.2/cli/conf.d/20-extra.ini
+COPY 20-extra.ini /etc/php/8.3/cli/conf.d/20-extra.ini
 COPY runner.sh /runner.sh
 
 # cleaning...
