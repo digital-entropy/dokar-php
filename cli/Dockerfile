@@ -26,7 +26,12 @@ RUN apt-get update \
        php8.3-imap php8.3-mysql php8.3-mbstring \
        php8.3-xml php8.3-zip php8.3-bcmath php8.3-soap \
        php8.3-intl php8.3-readline \
-       php8.3-ldap php8.3-redis \
+       php8.3-ldap \
+    && pecl install igbinary redis \
+    && rm -rf /tmp/pear \
+    && echo "extension=igbinary.so" > /etc/php/8.3/cli/conf.d/20-igbinary.ini \
+    && echo "extension=redis.so" > /etc/php/8.3/cli/conf.d/20-redis.ini \
+    && phpenmod igbinary redis \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && composer global require --quiet --no-ansi laravel/envoy \
     && composer clear-cache --quiet \
