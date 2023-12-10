@@ -15,7 +15,7 @@ fi
 if [ -d node_modules ]; then
     echo "node_modules ok!"
 else
-    npm install && npm install --dev chokidar
+    npm install
 fi
 
 echo "run on '$1' environment!"

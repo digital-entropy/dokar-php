@@ -27,11 +27,11 @@ RUN apt-get update \
        php8.3-xml php8.3-zip php8.3-bcmath php8.3-soap \
        php8.3-intl php8.3-readline \
        php8.3-ldap php-pear \
-    && pecl install igbinary redis \
-    && rm -rf /tmp/pear \
+    && pecl channel-update https://pecl.php.net/channel.xml \
+    && pecl install igbinary redis swoole \
     && echo "extension=igbinary.so" > /etc/php/8.3/cli/conf.d/20-igbinary.ini \
     && echo "extension=redis.so" > /etc/php/8.3/cli/conf.d/20-redis.ini \
-    && phpenmod igbinary redis \
+    && echo "extension=swoole.so" > /etc/php/8.3/cli/conf.d/20-swoole.ini \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && composer global require --quiet --no-ansi laravel/envoy \
     && ln -s /root/.composer/vendor/laravel/envoy/bin/envoy /usr/bin/envoy \        
@@ -42,8 +42,6 @@ RUN apt-get update \
     && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list \
     && apt update && apt install nodejs -y \
     && npm install -g chokidar pnpm \
-    && pecl channel-update https://pecl.php.net/channel.xml \
-    && pecl install swoole \
     # cleaning
     && composer clear-cache --quiet \
     && pecl clear-cache \
@@ -52,7 +50,6 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/* 
 
-COPY 20-extra.ini /etc/php/8.3/cli/conf.d/20-extra.ini
 COPY runner.sh /runner.sh
 
 # Add a non-root user to prevent files being created with root permissions on host machine.
@@ -73,4 +70,4 @@ WORKDIR /var/www
 ARG DOCKER_ENV=production
 ENV DOCKER_ENV ${DOCKER_ENV}
 
-CMD "runuser" "-l" $USER_CONTAINER "-c" "/runner.sh $DOCKER_ENV"
+CMD "runuser" "--preserve-environment" "-u" $USER_CONTAINER "/runner.sh" $DOCKER_ENV
