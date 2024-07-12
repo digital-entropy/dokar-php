@@ -1,6 +1,6 @@
 FROM ghcr.io/digital-entropy/dokar-php/cli:8.3
 
-LABEL org.opencontainers.image.source https://github.com/digital-entropy/dokar-php
+LABEL org.opencontainers.image.source=https://github.com/digital-entropy/dokar-php
 
 # Install FPM
 RUN export DEBIAN_FRONTEND=noninteractive \

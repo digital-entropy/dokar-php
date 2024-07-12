@@ -1,8 +1,8 @@
 FROM ubuntu:noble
 
-LABEL org.opencontainers.image.source https://github.com/digital-entropy/dokar-php
+LABEL org.opencontainers.image.source=https://github.com/digital-entropy/dokar-php
 
-ENV DEBIAN_FRONTEND noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
 
 ENV TERM=linux
 

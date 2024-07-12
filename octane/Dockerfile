@@ -1,8 +1,8 @@
 FROM ubuntu:noble
 
-LABEL org.opencontainers.image.source https://github.com/digital-entropy/dokar-php
+LABEL org.opencontainers.image.source=https://github.com/digital-entropy/dokar-php
 
-ENV DEBIAN_FRONTEND noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
 
 ENV TERM=linux
 
@@ -54,20 +54,20 @@ COPY runner.sh /runner.sh
 
 # Add a non-root user to prevent files being created with root permissions on host machine.
 ONBUILD ARG USER_CONTAINER=dokar
-ONBUILD ENV USER_CONTAINER ${USER_CONTAINER}
+ONBUILD ENV USER_CONTAINER=${USER_CONTAINER}
 ONBUILD ARG PUID=1000
-ONBUILD ENV PUID ${PUID}
+ONBUILD ENV PUID=${PUID}
 ONBUILD ARG PGID=1000
-ONBUILD ENV PGID ${PGID}
+ONBUILD ENV PGID=${PGID}
 
-ONBUILD RUN if ! grep -q $PGID /etc/group; then groupadd -g ${PGID} ${USER_CONTAINER}; fi && \
-    if ! grep -q $PUID /etc/passwd; then useradd --gid ${PGID} --uid ${PUID} -m ${USER_CONTAINER}; fi
+ONBUILD RUN (grep -q ":${PGID}:" /etc/group && old_group=$(getent group ${PGID} | cut -d: -f1) && groupmod -n ${USER_CONTAINER} ${old_group} || groupadd -g ${PGID} ${USER_CONTAINER}) \
+    && (grep -q ":${PUID}:" /etc/passwd && old_user=$(getent passwd ${PUID} | cut -d: -f1) && usermod -l ${USER_CONTAINER} -d /home/${USER_CONTAINER} -m ${old_user} || useradd --gid ${PGID} --uid ${PUID} -m ${USER_CONTAINER})
 
 EXPOSE 80
 
 WORKDIR /var/www
 
 ARG DOCKER_ENV=production
-ENV DOCKER_ENV ${DOCKER_ENV}
+ENV DOCKER_ENV=${DOCKER_ENV}
 
-CMD "runuser" "--preserve-environment" "-u" $USER_CONTAINER "/runner.sh" $DOCKER_ENV
+CMD ["runuser", "--preserve-environment", "-u", "$USER_CONTAINER", "/runner.sh", "$DOCKER_ENV"]
