@@ -36,4 +36,4 @@ EXPOSE 80
 
 STOPSIGNAL SIGTERM
 
-CMD /usr/bin/supervisord -n -c /etc/supervisor/supervisord.conf
+CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/supervisord.conf"]

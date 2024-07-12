@@ -70,4 +70,4 @@ WORKDIR /var/www
 ARG DOCKER_ENV=production
 ENV DOCKER_ENV=${DOCKER_ENV}
 
-CMD ["runuser", "--preserve-environment", "-u", "$USER_CONTAINER", "/runner.sh", "$DOCKER_ENV"]
+CMD ["runuser", "--preserve-environment", "-u", $USER_CONTAINER, "/runner.sh", $DOCKER_ENV]
