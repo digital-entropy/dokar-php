@@ -18,10 +18,10 @@ else
     npm install
 fi
 
-echo "run on '$1' environment!"
+echo "run on '$DOCKER_ENV' environment!"
 
-if [ $1 == "production" ]; then
+if [ $DOCKER_ENV == "production" ]; then
     php artisan octane:start --host=0.0.0.0 --port=80
-else 
+else
     php artisan octane:start --host=0.0.0.0 --watch --port=80
 fi

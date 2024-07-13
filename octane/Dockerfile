@@ -34,7 +34,7 @@ RUN apt-get update \
     && echo "extension=swoole.so" > /etc/php/8.3/cli/conf.d/20-swoole.ini \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && composer global require --quiet --no-ansi laravel/envoy \
-    && ln -s /root/.composer/vendor/laravel/envoy/bin/envoy /usr/bin/envoy \        
+    && ln -s /root/.composer/vendor/laravel/envoy/bin/envoy /usr/bin/envoy \
     # octane use chokidar for --watch option so we need to install nodejs
     && mkdir -p /etc/apt/keyrings \
     && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
@@ -48,7 +48,7 @@ RUN apt-get update \
     && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
         build-essential \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/* 
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
 COPY runner.sh /runner.sh
 
@@ -70,4 +70,4 @@ WORKDIR /var/www
 ARG DOCKER_ENV=production
 ENV DOCKER_ENV=${DOCKER_ENV}
 
-CMD ["runuser", "--preserve-environment", "-u", $USER_CONTAINER, "/runner.sh", $DOCKER_ENV]
+CMD ["/runner.sh"]
