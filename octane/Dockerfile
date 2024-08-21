@@ -26,12 +26,8 @@ RUN apt-get update \
        php8.3-imap php8.3-mysql php8.3-mbstring \
        php8.3-xml php8.3-zip php8.3-bcmath php8.3-soap \
        php8.3-intl php8.3-readline \
+       php8.3-redis php8.3-igbinary php8.3-swoole \
        php8.3-ldap php-pear \
-    && pecl channel-update https://pecl.php.net/channel.xml \
-    && pecl install igbinary redis swoole \
-    && echo "extension=igbinary.so" > /etc/php/8.3/cli/conf.d/20-igbinary.ini \
-    && echo "extension=redis.so" > /etc/php/8.3/cli/conf.d/20-redis.ini \
-    && echo "extension=swoole.so" > /etc/php/8.3/cli/conf.d/20-swoole.ini \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && composer global require --quiet --no-ansi laravel/envoy \
     && ln -s /root/.composer/vendor/laravel/envoy/bin/envoy /usr/bin/envoy \
@@ -44,7 +40,6 @@ RUN apt-get update \
     && npm install -g chokidar pnpm \
     # cleaning
     && composer clear-cache --quiet \
-    && pecl clear-cache \
     && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
         build-essential \
     && apt-get clean \
