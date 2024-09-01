@@ -69,5 +69,6 @@ WORKDIR /var/www
 
 ARG DOCKER_ENV=production
 ENV DOCKER_ENV=${DOCKER_ENV}
+ENV DOCKER_WORKERS=auto
 
 CMD ["/runner.sh"]
