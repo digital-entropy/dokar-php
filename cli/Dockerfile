@@ -10,7 +10,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN apk update \
    && apk add --repository=https://dl-cdn.alpinelinux.org/alpine/edge/testing gosu \
-   && apk add curl ca-certificates zip unzip git sqlite libcap libpng-dev \
+   && apk add bash curl ca-certificates zip unzip git sqlite libcap libpng-dev \
       php83 php83-dev php83-gd php83-curl php83-soap  \
       php83-sqlite3 php83-pgsql php83-mysqli \
       php83-mbstring php83-xml php83-zip php83-bcmath \
