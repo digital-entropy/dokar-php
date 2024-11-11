@@ -1,13 +1,13 @@
-FROM ghcr.io/digital-entropy/dokar-php/cli:8.3
+# FROM ghcr.io/digital-entropy/dokar-php/cli:8.3-slim
+FROM dokar-php/cli:8.3-slim
 
 LABEL org.opencontainers.image.source=https://github.com/digital-entropy/dokar-php
 
 # Install FPM
-RUN export DEBIAN_FRONTEND=noninteractive \
-    && apt-get update \
-    && apt-get -y --no-install-recommends install php8.3-fpm \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
+RUN apk update \
+    && apk add php83-fpm \
+    && apk cache clean \
+    && rm -rf /var/cache/apk/* /tmp/* /var/tmp/*
 
 # PHP-FPM packages need a nudge to make them docker-friendly
 COPY overrides.conf /etc/php/8.3/fpm/pool.d/z-overrides.conf

@@ -1,12 +1,13 @@
-FROM ghcr.io/digital-entropy/dokar-php/fpm:8.3
+FROM dokar-php/fpm:8.3-slim
+# FROM ghcr.io/digital-entropy/dokar-php/fpm:8.3-slim
 
 LABEL org.opencontainers.image.source=https://github.com/digital-entropy/dokar-php
 
-RUN export DEBIAN_FRONTEND=noninteractive \
-    && apt-get update \
-    && apt-get update \
-    && apt-get install nginx supervisor -y \ 
-    && rm /etc/nginx/sites-enabled/*
+RUN apk update \
+    && apk add nginx supervisor \ 
+    && apk cache clean \
+    && rm -rf /var/cache/apk/* /tmp/* /var/tmp/* \
+    && rm /etc/nginx/http.d/*
 
 RUN mkdir -p /var/www/public
 
@@ -14,7 +15,7 @@ COPY index.php /var/www/public
 
 WORKDIR /var/www
 
-COPY site.conf /etc/nginx/sites-enabled
+COPY site.conf /etc/nginx/http.d/site.conf
 
 COPY supervisor /etc/supervisor
 
@@ -27,8 +28,10 @@ ONBUILD ARG PGID=1000
 ONBUILD ENV PGID=${PGID}
 
 ONBUILD RUN if [ "${PGID}" != "0" ] && [ "${PUID}" != "0" ]; then \
-    (grep -q ":${PGID}:" /etc/group && old_group=$(getent group ${PGID} | cut -d: -f1) && groupmod -n ${USER_CONTAINER} ${old_group} || groupadd -g ${PGID} ${USER_CONTAINER}) \
-    && (grep -q ":${PUID}:" /etc/passwd && old_user=$(getent passwd ${PUID} | cut -d: -f1) && usermod -l ${USER_CONTAINER} -d /home/${USER_CONTAINER} -m ${old_user} || useradd --gid ${PGID} --uid ${PUID} -m ${USER_CONTAINER}) \
+    (grep -q ":${PGID}:" /etc/group && old_group=$(getent group ${PGID} | cut -d: -f1) && delgroup ${old_group} \
+        || addgroup -g ${PGID} ${USER_CONTAINER}) \
+    && (grep -q ":${PUID}:" /etc/passwd && old_user=$(getent passwd ${PUID} | cut -d: -f1) && deluser --remove-home ${old_user} \
+        || adduser -h /home/${USER_CONTAINER} -G ${USER_CONTAINER} -u ${PUID} ${USER_CONTAINER} -D) \
     fi
 
 EXPOSE 80

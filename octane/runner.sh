@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
 set -Eeo pipefail
 set -o errexit    # Used to exit upon error, avoiding cascading errors
 

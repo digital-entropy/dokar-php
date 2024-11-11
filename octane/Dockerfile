@@ -1,8 +1,6 @@
-FROM ubuntu:noble
+FROM alpine:3.20
 
 LABEL org.opencontainers.image.source=https://github.com/digital-entropy/dokar-php
-
-ENV DEBIAN_FRONTEND=noninteractive
 
 ENV TERM=linux
 
@@ -10,45 +8,25 @@ ENV TZ=UTC
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends gnupg gosu curl ca-certificates zip unzip git sqlite3 libcap2-bin libpng-dev build-essential libbrotli-dev \
-    && mkdir -p ~/.gnupg \
-    && chmod 600 ~/.gnupg \
-    && echo "disable-ipv6" >> ~/.gnupg/dirmngr.conf \
-    && echo "keyserver hkp://keyserver.ubuntu.com:80" >> ~/.gnupg/dirmngr.conf \
-    && gpg --recv-key 0x14aa40ec0831756756d7f66c4f4ea0aae5267a6c \
-    && gpg --export 0x14aa40ec0831756756d7f66c4f4ea0aae5267a6c > /usr/share/keyrings/ppa_ondrej_php.gpg \
-    && echo "deb [signed-by=/usr/share/keyrings/ppa_ondrej_php.gpg] https://ppa.launchpadcontent.net/ondrej/php/ubuntu noble main" > /etc/apt/sources.list.d/ppa_ondrej_php.list \
-    && apt-get update \
-    && apt-get install -y php8.3-cli php8.3-dev \
-       php8.3-pgsql php8.3-sqlite3 php8.3-gd \
-       php8.3-curl \
-       php8.3-imap php8.3-mysql php8.3-mbstring \
-       php8.3-xml php8.3-zip php8.3-bcmath php8.3-soap \
-       php8.3-intl php8.3-readline \
-       php8.3-ldap php-pear \
-    && pecl channel-update https://pecl.php.net/channel.xml \
-    && pecl install igbinary redis swoole \
-    && echo "extension=igbinary.so" > /etc/php/8.3/cli/conf.d/20-igbinary.ini \
-    && echo "extension=redis.so" > /etc/php/8.3/cli/conf.d/20-redis.ini \
-    && echo "extension=swoole.so" > /etc/php/8.3/cli/conf.d/20-swoole.ini \
-    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+RUN apk update \
+    && apk add --repository=https://dl-cdn.alpinelinux.org/alpine/edge/testing gosu \
+    && apk add curl ca-certificates zip unzip git sqlite libcap libpng-dev \
+        php83 php83-dev php83-gd php83-curl php83-soap  \
+        php83-sqlite3 php83-pgsql php83-mysqli \
+        php83-mbstring php83-xml php83-zip php83-bcmath \
+        php83-intl php83-ldap \
+        php83-pecl-igbinary php83-pecl-redis php83-pecl-swoole
+    
+RUN apk add composer \
     && composer global require --quiet --no-ansi laravel/envoy \
-    && ln -s /root/.composer/vendor/laravel/envoy/bin/envoy /usr/bin/envoy \
-    # octane use chokidar for --watch option so we need to install nodejs
-    && mkdir -p /etc/apt/keyrings \
-    && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
-    && NODE_MAJOR=20 \
-    && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list \
-    && apt update && apt install nodejs -y \
-    && npm install -g chokidar pnpm \
-    # cleaning
     && composer clear-cache --quiet \
-    && pecl clear-cache \
-    && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
-        build-essential \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
+    && ln -s /root/.composer/vendor/laravel/envoy/bin/envoy /usr/bin/envoy
+    
+RUN apk add nodejs npm \
+    && npm install -g chokidar pnpm
+    
+RUN apk cache clean \
+    && rm -rf /var/cache/apk/* /tmp/* /var/tmp/*
 
 COPY runner.sh /runner.sh
 
@@ -60,9 +38,12 @@ ONBUILD ENV PUID=${PUID}
 ONBUILD ARG PGID=1000
 ONBUILD ENV PGID=${PGID}
 
+# Convert to alpine
 ONBUILD RUN if [ "${PGID}" != "0" ] && [ "${PUID}" != "0" ]; then \
-    (grep -q ":${PGID}:" /etc/group && old_group=$(getent group ${PGID} | cut -d: -f1) && groupmod -n ${USER_CONTAINER} ${old_group} || groupadd -g ${PGID} ${USER_CONTAINER}) \
-    && (grep -q ":${PUID}:" /etc/passwd && old_user=$(getent passwd ${PUID} | cut -d: -f1) && usermod -l ${USER_CONTAINER} -d /home/${USER_CONTAINER} -m ${old_user} || useradd --gid ${PGID} --uid ${PUID} -m ${USER_CONTAINER}) \
+    (grep -q ":${PGID}:" /etc/group && old_group=$(getent group ${PGID} | cut -d: -f1) && delgroup ${old_group} \
+        || addgroup -g ${PGID} ${USER_CONTAINER}) \
+    && (grep -q ":${PUID}:" /etc/passwd && old_user=$(getent passwd ${PUID} | cut -d: -f1) && deluser --remove-home ${old_user} \
+        || adduser -h /home/${USER_CONTAINER} -G ${USER_CONTAINER} -u ${PUID} ${USER_CONTAINER} -D) \
     fi
 
 EXPOSE 80
