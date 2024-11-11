@@ -1,5 +1,4 @@
-FROM dokar-php/fpm:8.3-slim
-# FROM ghcr.io/digital-entropy/dokar-php/fpm:8.3-slim
+FROM ghcr.io/digital-entropy/dokar-php/fpm:8.3-slim
 
 LABEL org.opencontainers.image.source=https://github.com/digital-entropy/dokar-php
 
