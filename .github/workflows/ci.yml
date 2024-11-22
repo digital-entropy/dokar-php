@@ -1,10 +1,10 @@
-name: Docker build
+name: Docker build for ubuntu variant
 on: 
   push:
     branches:
-      - main
+      - 8.3
   schedule:
-    - cron: '0 0 */14 * *'
+    - cron: '0 0 1 * *'
   workflow_dispatch:
 
 jobs:
