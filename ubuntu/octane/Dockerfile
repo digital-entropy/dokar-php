@@ -1,6 +1,7 @@
 FROM ubuntu:noble
 
 LABEL org.opencontainers.image.source=https://github.com/digital-entropy/dokar-php
+LABEL org.opencontainers.image.branch=8.3
 
 ENV DEBIAN_FRONTEND=noninteractive
 

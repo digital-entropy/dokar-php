@@ -9,7 +9,7 @@ on:
 
 jobs:
   build-cli:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       -
         name: Checkout
@@ -31,14 +31,14 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v6
         with:
-          context: cli/
+          context: ubuntu/cli/
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ghcr.io/digital-entropy/dokar-php/cli:8.3
 
   build-fpm:
     needs: build-cli
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       -
         name: Checkout
@@ -60,13 +60,13 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v6
         with:
-          context: fpm/
+          context: ubuntu/fpm/
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ghcr.io/digital-entropy/dokar-php/fpm:8.3
 
   build-octane:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       -
         name: Checkout
@@ -88,14 +88,14 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v6
         with:
-          context: octane/
+          context: ubuntu/octane/
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ghcr.io/digital-entropy/dokar-php/octane:8.3
 
   build-nginx:
     needs: build-fpm
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       -
         name: Checkout
@@ -117,7 +117,7 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v6
         with:
-          context: nginx/
+          context: ubuntu/nginx/
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ghcr.io/digital-entropy/dokar-php/nginx:8.3

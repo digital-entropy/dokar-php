@@ -1,0 +1,123 @@
+name: Docker build for slim variant
+on: 
+  push:
+    branches:
+      - 8.3
+  schedule:
+    - cron: '0 0 1 * *'
+  workflow_dispatch:
+
+jobs:
+  build-cli:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v4
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      -
+        name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ secrets.GHCR_USR }}
+          password: ${{ secrets.GHCR_PAT }}
+      -
+        name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: slim/cli/
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ghcr.io/digital-entropy/dokar-php/cli:8.3-slim
+
+  build-fpm:
+    needs: build-cli
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v4
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      -
+        name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ secrets.GHCR_USR }}
+          password: ${{ secrets.GHCR_PAT }}
+      -
+        name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: ubuntu/fpm/
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ghcr.io/digital-entropy/dokar-php/fpm:8.3-slim
+
+  build-octane:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v4
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      -
+        name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ secrets.GHCR_USR }}
+          password: ${{ secrets.GHCR_PAT }}
+      -
+        name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: ubuntu/octane/
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ghcr.io/digital-entropy/dokar-php/octane:8.3-slim
+
+  build-nginx:
+    needs: build-fpm
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v4
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      -
+        name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ secrets.GHCR_USR }}
+          password: ${{ secrets.GHCR_PAT }}
+      -
+        name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: ubuntu/nginx/
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ghcr.io/digital-entropy/dokar-php/nginx:8.3-slim
