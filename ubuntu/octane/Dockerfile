@@ -16,10 +16,12 @@ RUN apt-get update \
     && mkdir -p ~/.gnupg \
     && chmod 600 ~/.gnupg \
     && echo "disable-ipv6" >> ~/.gnupg/dirmngr.conf \
-    && echo "keyserver hkp://keyserver.ubuntu.com:80" >> ~/.gnupg/dirmngr.conf \
-    && gpg --recv-key 0x14aa40ec0841756756d7f66c4f4ea0aae5267a6c \
-    && gpg --export 0x14aa40ec0841756756d7f66c4f4ea0aae5267a6c > /usr/share/keyrings/ppa_ondrej_php.gpg \
-    && echo "deb [signed-by=/usr/share/keyrings/ppa_ondrej_php.gpg] https://ppa.launchpadcontent.net/ondrej/php/ubuntu noble main" > /etc/apt/sources.list.d/ppa_ondrej_php.list \
+    && echo "Acquire::http::Pipeline-Depth 0;" > /etc/apt/apt.conf.d/99custom \
+    && echo "Acquire::http::No-Cache true;" >> /etc/apt/apt.conf.d/99custom \
+    && echo "Acquire::BrokenProxy    true;" >> /etc/apt/apt.conf.d/99custom \
+    && mkdir -p /etc/apt/keyrings \
+    && curl -sS 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x14aa40ec0831756756d7f66c4f4ea0aae5267a6c' | gpg --dearmor | tee /etc/apt/keyrings/ppa_ondrej_php.gpg > /dev/null \
+    && echo "deb [signed-by=/etc/apt/keyrings/ppa_ondrej_php.gpg] https://ppa.launchpadcontent.net/ondrej/php/ubuntu noble main" > /etc/apt/sources.list.d/ppa_ondrej_php.list \
     && apt-get update \
     && apt-get install -y php8.4-cli php8.4-dev \
        php8.4-pgsql php8.4-sqlite3 php8.4-gd \
