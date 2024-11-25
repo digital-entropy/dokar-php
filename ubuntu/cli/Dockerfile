@@ -1,6 +1,7 @@
 FROM ubuntu:noble
 
 LABEL org.opencontainers.image.source=https://github.com/digital-entropy/dokar-php
+LABEL org.opencontainers.image.branch=8.4
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -16,21 +17,21 @@ RUN apt-get update \
     && chmod 600 ~/.gnupg \
     && echo "disable-ipv6" >> ~/.gnupg/dirmngr.conf \
     && echo "keyserver hkp://keyserver.ubuntu.com:80" >> ~/.gnupg/dirmngr.conf \
-    && gpg --recv-key 0x14aa40ec0831756756d7f66c4f4ea0aae5267a6c \
-    && gpg --export 0x14aa40ec0831756756d7f66c4f4ea0aae5267a6c > /usr/share/keyrings/ppa_ondrej_php.gpg \
+    && gpg --recv-key 0x14aa40ec0841756756d7f66c4f4ea0aae5267a6c \
+    && gpg --export 0x14aa40ec0841756756d7f66c4f4ea0aae5267a6c > /usr/share/keyrings/ppa_ondrej_php.gpg \
     && echo "deb [signed-by=/usr/share/keyrings/ppa_ondrej_php.gpg] https://ppa.launchpadcontent.net/ondrej/php/ubuntu noble main" > /etc/apt/sources.list.d/ppa_ondrej_php.list \
     && apt-get update \
-    && apt-get install -y php8.3-cli php8.3-dev \
-       php8.3-pgsql php8.3-sqlite3 php8.3-gd \
-       php8.3-curl \
-       php8.3-imap php8.3-mysql php8.3-mbstring \
-       php8.3-xml php8.3-zip php8.3-bcmath php8.3-soap \
-       php8.3-intl php8.3-readline \
-       php8.3-ldap \
+    && apt-get install -y php8.4-cli php8.4-dev \
+       php8.4-pgsql php8.4-sqlite3 php8.4-gd \
+       php8.4-curl \
+       php8.4-imap php8.4-mysql php8.4-mbstring \
+       php8.4-xml php8.4-zip php8.4-bcmath php8.4-soap \
+       php8.4-intl php8.4-readline \
+       php8.4-ldap \
     && pecl install igbinary redis \
     && rm -rf /tmp/pear \
-    && echo "extension=igbinary.so" > /etc/php/8.3/cli/conf.d/20-igbinary.ini \
-    && echo "extension=redis.so" > /etc/php/8.3/cli/conf.d/20-redis.ini \
+    && echo "extension=igbinary.so" > /etc/php/8.4/cli/conf.d/20-igbinary.ini \
+    && echo "extension=redis.so" > /etc/php/8.4/cli/conf.d/20-redis.ini \
     && phpenmod igbinary redis \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && composer global require --quiet --no-ansi laravel/envoy \

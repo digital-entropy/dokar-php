@@ -1,6 +1,7 @@
-FROM ghcr.io/digital-entropy/dokar-php/fpm:8.3
+FROM ghcr.io/digital-entropy/dokar-php/fpm:8.4
 
 LABEL org.opencontainers.image.source=https://github.com/digital-entropy/dokar-php
+LABEL org.opencontainers.image.branch=8.4
 
 RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \

@@ -1,15 +1,15 @@
-name: Docker build
+name: Docker build for slim variant
 on: 
   push:
     branches:
       - main
   schedule:
-    - cron: '0 0 */14 * *'
+    - cron: '0 0 1 * *'
   workflow_dispatch:
 
 jobs:
   build-cli:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       -
         name: Checkout
@@ -31,14 +31,14 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v6
         with:
-          context: cli/
+          context: slim/cli/
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ghcr.io/digital-entropy/dokar-php/cli:8.3
+          tags: ghcr.io/digital-entropy/dokar-php/cli:8.4-slim
 
   build-fpm:
     needs: build-cli
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       -
         name: Checkout
@@ -60,13 +60,13 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v6
         with:
-          context: fpm/
+          context: ubuntu/fpm/
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ghcr.io/digital-entropy/dokar-php/fpm:8.3
+          tags: ghcr.io/digital-entropy/dokar-php/fpm:8.4-slim
 
   build-octane:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       -
         name: Checkout
@@ -88,14 +88,14 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v6
         with:
-          context: octane/
+          context: ubuntu/octane/
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ghcr.io/digital-entropy/dokar-php/octane:8.3
+          tags: ghcr.io/digital-entropy/dokar-php/octane:8.4-slim
 
   build-nginx:
     needs: build-fpm
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       -
         name: Checkout
@@ -117,7 +117,7 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v6
         with:
-          context: nginx/
+          context: ubuntu/nginx/
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ghcr.io/digital-entropy/dokar-php/nginx:8.3
+          tags: ghcr.io/digital-entropy/dokar-php/nginx:8.4-slim
