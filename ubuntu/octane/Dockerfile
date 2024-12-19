@@ -31,16 +31,9 @@ RUN apt-get update \
        php8.4-intl php8.4-readline \
        php8.4-ldap php-pear \
     && pecl channel-update https://pecl.php.net/channel.xml \
-    && pecl install igbinary redis \
+    && pecl install igbinary redis swoole \
     && echo "extension=igbinary.so" > /etc/php/8.4/cli/conf.d/20-igbinary.ini \
     && echo "extension=redis.so" > /etc/php/8.4/cli/conf.d/20-redis.ini \
-    && curl -o swoole.tar.gz https://codeload.github.com/swoole/swoole-src/tar.gz/refs/tags/v6.0.0-rc1 \
-    && tar -xf swoole.tar.gz \
-    && cd swoole-src-6.0.0-rc1 \
-    && phpize \
-    && ./configure \
-    && make -j$(nproc) && make install \
-    && cd .. && rm -rf swoole-src-6.0.0-rc1 swoole.tar.gz \
     && echo "extension=swoole.so" > /etc/php/8.4/cli/conf.d/20-swoole.ini \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && composer global require --quiet --no-ansi laravel/envoy \

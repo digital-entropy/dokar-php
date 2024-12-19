@@ -14,8 +14,3 @@ Octane | Crafted for running octane with `swoole` driver. use `DOCKER_WORKERS=` 
 
 > Dokar PHP by default is using Ubuntu image, but we also provide Alpine image.
 > You can add `-slim` in tag to use Alpine based image. e.g., `docker pull ghcr.io/digital-entropy/dokar-php/octane:8.4-slim` 
-
-### ⚠️ Important Notes
-
-- The `-slim` (Alpine-based) variants for PHP 8.4 are currently not available
-- Octane flavor is currently also in Release Candidate (RC) status as the Swoole extension for PHP 8.4 is still in alpha stage [refer to swoole release note](https://github.com/swoole/swoole-src/releases)
