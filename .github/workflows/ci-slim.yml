@@ -60,7 +60,7 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v6
         with:
-          context: ubuntu/fpm/
+          context: slim/fpm/
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ghcr.io/digital-entropy/dokar-php/fpm:8.3-slim
@@ -88,7 +88,7 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v6
         with:
-          context: ubuntu/octane/
+          context: slim/octane/
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ghcr.io/digital-entropy/dokar-php/octane:8.3-slim
@@ -117,7 +117,7 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v6
         with:
-          context: ubuntu/nginx/
+          context: slim/nginx/
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ghcr.io/digital-entropy/dokar-php/nginx:8.3-slim
