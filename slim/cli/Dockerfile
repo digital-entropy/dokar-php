@@ -14,6 +14,7 @@ RUN apk update \
    && apk add bash curl ca-certificates zip unzip git sqlite libcap libpng-dev \
       php83 php83-dev php83-gd php83-curl php83-soap  \
       php83-sqlite3 php83-pgsql php83-mysqli \
+      php83-dom php83-tokenizer php83-fileinfo \
       php83-mbstring php83-xml php83-zip php83-bcmath \
       php83-intl php83-ldap php83-pecl-igbinary php83-pecl-redis \
       composer \
