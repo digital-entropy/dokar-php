@@ -1,7 +1,7 @@
-FROM ghcr.io/digital-entropy/dokar-php/fpm:8.4-slim
+FROM ghcr.io/digital-entropy/dokar-php/fpm:8.5-slim
 
 LABEL org.opencontainers.image.source=https://github.com/digital-entropy/dokar-php
-LABEL org.opencontainers.image.branch=8.4
+LABEL org.opencontainers.image.branch=8.5
 
 RUN apk update \
     && apk add nginx supervisor \ 

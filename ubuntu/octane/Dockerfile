@@ -1,7 +1,7 @@
 FROM ubuntu:noble
 
 LABEL org.opencontainers.image.source=https://github.com/digital-entropy/dokar-php
-LABEL org.opencontainers.image.branch=8.4
+LABEL org.opencontainers.image.branch=8.5
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -23,18 +23,18 @@ RUN apt-get update \
     && curl -sS 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x14aa40ec0831756756d7f66c4f4ea0aae5267a6c' | gpg --dearmor | tee /etc/apt/keyrings/ppa_ondrej_php.gpg > /dev/null \
     && echo "deb [signed-by=/etc/apt/keyrings/ppa_ondrej_php.gpg] https://ppa.launchpadcontent.net/ondrej/php/ubuntu noble main" > /etc/apt/sources.list.d/ppa_ondrej_php.list \
     && apt-get update \
-    && apt-get install -y php8.4-cli php8.4-dev \
-       php8.4-pgsql php8.4-sqlite3 php8.4-gd \
-       php8.4-curl \
-       php8.4-imap php8.4-mysql php8.4-mbstring \
-       php8.4-xml php8.4-zip php8.4-bcmath php8.4-soap \
-       php8.4-intl php8.4-readline \
-       php8.4-ldap php-pear \
+    && apt-get install -y php8.5-cli php8.5-dev \
+       php8.5-pgsql php8.5-sqlite3 php8.5-gd \
+       php8.5-curl \
+       php8.5-imap php8.5-mysql php8.5-mbstring \
+       php8.5-xml php8.5-zip php8.5-bcmath php8.5-soap \
+       php8.5-intl php8.5-readline \
+       php8.5-ldap php-pear \
     && pecl channel-update https://pecl.php.net/channel.xml \
     && pecl install igbinary redis swoole \
-    && echo "extension=igbinary.so" > /etc/php/8.4/cli/conf.d/20-igbinary.ini \
-    && echo "extension=redis.so" > /etc/php/8.4/cli/conf.d/20-redis.ini \
-    && echo "extension=swoole.so" > /etc/php/8.4/cli/conf.d/20-swoole.ini \
+    && echo "extension=igbinary.so" > /etc/php/8.5/cli/conf.d/20-igbinary.ini \
+    && echo "extension=redis.so" > /etc/php/8.5/cli/conf.d/20-redis.ini \
+    && echo "extension=swoole.so" > /etc/php/8.5/cli/conf.d/20-swoole.ini \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && composer global require --quiet --no-ansi laravel/envoy \
     && ln -s /root/.composer/vendor/laravel/envoy/bin/envoy /usr/bin/envoy \

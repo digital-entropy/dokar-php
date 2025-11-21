@@ -1,7 +1,7 @@
 FROM alpine:3
 
 LABEL org.opencontainers.image.source=https://github.com/digital-entropy/dokar-php
-LABEL org.opencontainers.image.branch=8.4
+LABEL org.opencontainers.image.branch=8.5
 
 ENV TERM=linux
 
@@ -12,12 +12,12 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN apk update \
     && apk add --repository=https://dl-cdn.alpinelinux.org/alpine/edge/testing gosu \
     && apk add bash curl ca-certificates zip unzip git sqlite libcap libpng-dev \
-        php84 php84-dev php84-gd php84-curl php84-soap  \
-        php84-sqlite3 php84-pgsql php84-mysqli \
-        php84-dom php84-tokenizer php84-fileinfo \
-        php84-mbstring php84-xml php84-zip php84-bcmath \
-        php84-intl php84-ldap \
-        php84-pecl-igbinary php84-pecl-redis php84-pecl-swoole
+        php85 php85-dev php85-gd php85-curl php85-soap  \
+        php85-sqlite3 php85-pgsql php85-mysqli \
+        php85-dom php85-tokenizer php85-fileinfo \
+        php85-mbstring php85-xml php85-zip php85-bcmath \
+        php85-intl php85-ldap \
+        php85-pecl-igbinary php85-pecl-redis php85-pecl-swoole
     
 RUN apk add composer \
     && composer global require --quiet --no-ansi laravel/envoy \

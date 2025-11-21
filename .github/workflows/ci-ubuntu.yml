@@ -34,7 +34,7 @@ jobs:
           context: ubuntu/cli/
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ghcr.io/digital-entropy/dokar-php/cli:8.4
+          tags: ghcr.io/digital-entropy/dokar-php/cli:8.5
 
   build-fpm:
     needs: build-cli
@@ -63,7 +63,7 @@ jobs:
           context: ubuntu/fpm/
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ghcr.io/digital-entropy/dokar-php/fpm:8.4
+          tags: ghcr.io/digital-entropy/dokar-php/fpm:8.5
 
   build-octane:
     runs-on: ubuntu-latest
@@ -91,7 +91,7 @@ jobs:
           context: ubuntu/octane/
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ghcr.io/digital-entropy/dokar-php/octane:8.4
+          tags: ghcr.io/digital-entropy/dokar-php/octane:8.5
 
   build-nginx:
     needs: build-fpm
@@ -120,4 +120,4 @@ jobs:
           context: ubuntu/nginx/
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ghcr.io/digital-entropy/dokar-php/nginx:8.4
+          tags: ghcr.io/digital-entropy/dokar-php/nginx:8.5
