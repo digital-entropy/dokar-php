@@ -2,7 +2,7 @@ name: Docker build for slim variant
 on: 
   push:
     branches:
-      - main
+      - 8.4
   schedule:
     - cron: '0 0 1 * *'
   workflow_dispatch:
