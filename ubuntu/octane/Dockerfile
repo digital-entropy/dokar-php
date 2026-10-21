@@ -11,6 +11,9 @@ ENV TZ=UTC
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
+# Fail closed on missing repository indexes; retry transient downloads with backoff.
+RUN printf '%s\n' 'Acquire::Retries "5";' 'Acquire::Retries::Delay "true";' 'Acquire::Retries::Delay::Maximum "30";' 'Acquire::http::Timeout "30";' 'Acquire::https::Timeout "30";' 'APT::Update::Error-Mode "any";' > /etc/apt/apt.conf.d/80-download-resilience
+
 RUN apt-get update \
     && apt-get install -y --no-install-recommends gnupg gosu curl ca-certificates zip unzip git sqlite3 libcap2-bin libpng-dev build-essential libbrotli-dev \
     && mkdir -p ~/.gnupg \
@@ -30,7 +33,10 @@ RUN apt-get update \
        php8.4-xml php8.4-zip php8.4-bcmath php8.4-soap \
        php8.4-intl php8.4-readline \
        php8.4-ldap php-pear \
-    && pecl channel-update https://pecl.php.net/channel.xml \
+    && php8.4 -r 'printf("PHP runtime: %s\n", PHP_VERSION); exit(PHP_MAJOR_VERSION === 8 && PHP_MINOR_VERSION === 4 && version_compare(PHP_VERSION, "8.4.27", ">=") ? 0 : 42);' \
+    && curl --fail --show-error --silent --location --retry 5 --retry-max-time 180 --connect-timeout 15 --max-time 60 https://pecl.php.net/channel.xml -o /tmp/pecl-channel.xml \
+    && php8.4 -r '$x = simplexml_load_file("/tmp/pecl-channel.xml"); if (!$x || (string)$x->name !== "pecl.php.net") { fwrite(STDERR, "Invalid PECL channel XML\n"); exit(1); }' \
+    && pecl channel-update /tmp/pecl-channel.xml \
     && pecl install igbinary redis swoole \
     && echo "extension=igbinary.so" > /etc/php/8.4/cli/conf.d/20-igbinary.ini \
     && echo "extension=redis.so" > /etc/php/8.4/cli/conf.d/20-redis.ini \
