@@ -32,15 +32,14 @@ RUN apt-get update \
        php8.4-imap php8.4-mysql php8.4-mbstring \
        php8.4-xml php8.4-zip php8.4-bcmath php8.4-soap \
        php8.4-intl php8.4-readline \
-       php8.4-ldap php-pear \
+       php8.4-ldap php8.4-redis php8.4-igbinary php-pear \
     && php8.4 -r 'printf("PHP runtime: %s\n", PHP_VERSION); exit(PHP_MAJOR_VERSION === 8 && PHP_MINOR_VERSION === 4 && version_compare(PHP_VERSION, "8.4.27", ">=") ? 0 : 42);' \
     && curl --fail --show-error --silent --location --retry 5 --retry-max-time 180 --connect-timeout 15 --max-time 60 https://pecl.php.net/channel.xml -o /tmp/pecl-channel.xml \
     && php8.4 -r '$x = simplexml_load_file("/tmp/pecl-channel.xml"); if (!$x || (string)$x->name !== "pecl.php.net") { fwrite(STDERR, "Invalid PECL channel XML\n"); exit(1); }' \
     && pecl channel-update /tmp/pecl-channel.xml \
-    && pecl install igbinary redis swoole \
-    && echo "extension=igbinary.so" > /etc/php/8.4/cli/conf.d/20-igbinary.ini \
-    && echo "extension=redis.so" > /etc/php/8.4/cli/conf.d/20-redis.ini \
+    && pecl install swoole \
     && echo "extension=swoole.so" > /etc/php/8.4/cli/conf.d/20-swoole.ini \
+    && php8.4 -r 'foreach (["redis","igbinary","swoole"] as $ext) { if (!extension_loaded($ext)) { fwrite(STDERR, "Missing extension: $ext\n"); exit(1); } printf("%s=%s\n", $ext, phpversion($ext)); }' \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && composer global require --quiet --no-ansi laravel/envoy \
     && ln -s /root/.composer/vendor/laravel/envoy/bin/envoy /usr/bin/envoy \
