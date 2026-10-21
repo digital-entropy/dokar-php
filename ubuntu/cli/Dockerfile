@@ -29,12 +29,8 @@ RUN apt-get update \
        php8.5-imap php8.5-mysql php8.5-mbstring \
        php8.5-xml php8.5-zip php8.5-bcmath php8.5-soap \
        php8.5-intl php8.5-readline \
-       php8.5-ldap \
-    && pecl install igbinary redis \
-    && rm -rf /tmp/pear \
-    && echo "extension=igbinary.so" > /etc/php/8.5/cli/conf.d/20-igbinary.ini \
-    && echo "extension=redis.so" > /etc/php/8.5/cli/conf.d/20-redis.ini \
-    && phpenmod igbinary redis \
+       php8.5-ldap php8.5-redis php8.5-igbinary \
+    && php8.5 -r 'foreach (["redis","igbinary"] as $ext) { if (!extension_loaded($ext)) { fwrite(STDERR, "Missing extension: $ext\n"); exit(1); } printf("%s=%s\n", $ext, phpversion($ext)); }' \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && composer global require --quiet --no-ansi laravel/envoy \
     && composer clear-cache --quiet \
