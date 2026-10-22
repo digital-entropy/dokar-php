@@ -18,6 +18,7 @@ RUN apk update \
       php85-mbstring php85-xml php85-zip php85-bcmath \
       php85-intl php85-ldap php85-pecl-igbinary php85-pecl-redis \
       composer \
+   && php85 -r 'printf("PHP runtime: %s\n", PHP_VERSION); exit(PHP_MAJOR_VERSION === 8 && PHP_MINOR_VERSION === 5 && version_compare(PHP_VERSION, "8.5.12", ">=") ? 0 : 42);' \
    && apk cache clean \
    && rm -rf /var/cache/apk/* /tmp/* /var/tmp/*
 
