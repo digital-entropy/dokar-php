@@ -1,4 +1,5 @@
-FROM ghcr.io/digital-entropy/dokar-php/cli:8.2
+ARG BASE_IMAGE=ghcr.io/digital-entropy/dokar-php/cli:8.2
+FROM ${BASE_IMAGE}
 
 LABEL org.opencontainers.image.source https://github.com/digital-entropy/dokar-php
 
@@ -6,6 +7,7 @@ LABEL org.opencontainers.image.source https://github.com/digital-entropy/dokar-p
 RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
     && apt-get -y --no-install-recommends install php8.2-fpm \
+    && v=$(dpkg-query -W -f='${Version}' php8.2-fpm) && dpkg --compare-versions "$v" ge "8.2.35-1" \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 

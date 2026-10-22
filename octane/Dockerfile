@@ -1,26 +1,25 @@
-FROM ghcr.io/digital-entropy/dokar-php/cli:8.2
+ARG BASE_IMAGE=ghcr.io/digital-entropy/dokar-php/cli:8.2
+FROM ${BASE_IMAGE}
 
 LABEL org.opencontainers.image.source https://github.com/digital-entropy/dokar-php
 
 RUN apt-get update \
-    && apt-get -y --no-install-recommends install \
-        build-essential \
-        php-pear \
-    # octane use chokidar for --watch option so we need to install nodejs
-    && curl -sL https://deb.nodesource.com/setup_18.x | bash - \
-    && apt install nodejs -y \
-    && npm install -g chokidar pnpm 
-
-RUN pecl channel-update https://pecl.php.net/channel.xml
-RUN pecl install swoole
-
-COPY 20-extra.ini /etc/php/8.2/cli/conf.d/20-extra.ini
-COPY runner.sh /runner.sh
-
-# cleaning...
-RUN pecl clear-cache \
+    && apt-get install -y --no-install-recommends build-essential php-pear libbrotli-dev \
+    && curl -fsSL --retry 5 --connect-timeout 15 --max-time 180 https://pecl.php.net/get/swoole-6.2.3.tgz -o /tmp/extension.tgz \
+    && printf '%s  %s\n' '21dfa1c4a4a09f4d1cb4b154f7defdc91fbabafc8d44a77f8f618b9742c67304' /tmp/extension.tgz | sha256sum -c - \
+    && pecl install /tmp/extension.tgz \
+    && printf '%s\n' 'extension=swoole.so' > /etc/php/8.2/cli/conf.d/20-swoole.ini \
+    && php8.2 -r 'if (phpversion("swoole") !== "6.2.3") exit(42);' \
+    && mkdir -p /etc/apt/keyrings \
+    && curl -fsSL --retry 5 https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
+    && printf '%s\n' 'deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_22.x nodistro main' > /etc/apt/sources.list.d/nodesource.list \
+    && apt-get update && apt-get install -y nodejs \
+    && npm install -g chokidar pnpm \
+    && apt-get purge -y --auto-remove build-essential \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/* 
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
+
+COPY runner.sh /runner.sh
 
 # Add a non-root user to prevent files being created with root permissions on host machine.
 ONBUILD ARG USER_CONTAINER=dokar
