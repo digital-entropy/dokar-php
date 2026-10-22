@@ -1,11 +1,14 @@
-FROM ghcr.io/digital-entropy/dokar-php/fpm:8.0
+ARG BASE_IMAGE=ghcr.io/digital-entropy/dokar-php/fpm:8.0
+FROM ${BASE_IMAGE}
 
 LABEL org.opencontainers.image.source https://github.com/digital-entropy/dokar-php
 
 RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
-    && apt-get install nginx supervisor -y \ 
-    && rm /etc/nginx/sites-enabled/*
+    && apt-get install nginx supervisor -y \
+    && rm -f /etc/nginx/sites-enabled/* \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
 RUN mkdir -p /var/www/public
 

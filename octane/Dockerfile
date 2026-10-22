@@ -1,23 +1,24 @@
-FROM ghcr.io/digital-entropy/dokar-php/cli:8.0
+ARG BASE_IMAGE=ghcr.io/digital-entropy/dokar-php/cli:8.0
+FROM ${BASE_IMAGE}
 
 LABEL org.opencontainers.image.source https://github.com/digital-entropy/dokar-php
 
 RUN apt-get update \
-    && apt-get -y --no-install-recommends install \
-        build-essential \
-        php-pear \
-    # octane use chokidar for --watch option so we need to install nodejs
-    && curl -sL https://deb.nodesource.com/setup_lts.x | bash - \
-    && apt install nodejs -y \
-    && pecl channel-update https://pecl.php.net/channel.xml \
-    && pecl install openswoole \
-    && pecl clear-cache \
-    # cleaning...
-    && apt autoremove -y build-essential \
+    && apt-get install -y --no-install-recommends build-essential php-pear libbrotli-dev \
+    && curl -fsSL --retry 5 --connect-timeout 15 --max-time 180 https://pecl.php.net/get/openswoole-4.12.1.tgz -o /tmp/extension.tgz \
+    && printf '%s  %s\n' '64559632340aa67b09d6386b204750b7b58fb791e4e6ea8e8b610952935260b5' /tmp/extension.tgz | sha256sum -c - \
+    && pecl install /tmp/extension.tgz \
+    && printf '%s\n' 'extension=openswoole.so' > /etc/php/8.0/cli/conf.d/20-openswoole.ini \
+    && php8.0 -r 'if (phpversion("openswoole") !== "4.12.1") exit(42);' \
+    && mkdir -p /etc/apt/keyrings \
+    && curl -fsSL --retry 5 https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
+    && printf '%s\n' 'deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_22.x nodistro main' > /etc/apt/sources.list.d/nodesource.list \
+    && apt-get update && apt-get install -y nodejs \
+    && npm install -g chokidar pnpm \
+    && apt-get purge -y --auto-remove build-essential \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/* 
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
-COPY 20-swoole.ini /etc/php/8.0/cli/conf.d/20-swoole.ini
 COPY runner.sh /runner.sh
 
 # Add a non-root user to prevent files being created with root permissions on host machine.
