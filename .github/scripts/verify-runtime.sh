@@ -10,6 +10,6 @@ php -r 'if (PHP_MAJOR_VERSION . "." . PHP_MINOR_VERSION !== $argv[1]) exit(42); 
 composer --version
 case "$variant" in
  fpm|nginx) installed=$(dpkg-query -W -f='${Version}' php"$version"-fpm); dpkg --compare-versions "$installed" ge "$minimum"; /usr/sbin/php-fpm"$version" -t;;
- octane) php -r 'if (!extension_loaded("swoole") && !extension_loaded("openswoole")) exit(45);';;
+ octane) php -r 'if (!extension_loaded("swoole")) exit(45);';;
 esac
 test -z "$(find /var/lib/apt/lists -type f -name '*Packages*' -print -quit)"
