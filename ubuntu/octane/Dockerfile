@@ -52,7 +52,6 @@ RUN apt-get update \
     && npm install -g chokidar pnpm \
     # cleaning
     && composer clear-cache --quiet \
-    && pecl clear-cache \
     && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
         build-essential \
     && apt-get clean \
