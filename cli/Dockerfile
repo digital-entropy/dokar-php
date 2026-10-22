@@ -1,4 +1,4 @@
-FROM ubuntu:focal
+FROM ubuntu:noble
 
 LABEL org.opencontainers.image.source https://github.com/digital-entropy/dokar-php/tree/7.2
 
@@ -10,14 +10,14 @@ ENV TZ=UTC
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
+# noble ships an ubuntu user on UID/GID 1000, which the images below create themselves
+RUN userdel -r ubuntu
+
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends gnupg \
-    && mkdir -p ~/.gnupg \
-    && chmod 600 ~/.gnupg \
-    && echo "disable-ipv6" >> ~/.gnupg/dirmngr.conf \
-    && apt-key adv --homedir ~/.gnupg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys E5267A6C \
-    && apt-key adv --homedir ~/.gnupg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C300EE8C \
-    && echo "deb http://ppa.launchpad.net/ondrej/php/ubuntu focal main" > /etc/apt/sources.list.d/ppa_ondrej_php.list \
+    && apt-get install -y --no-install-recommends gnupg curl ca-certificates \
+    && mkdir -p /etc/apt/keyrings \
+    && curl -sS 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x14aa40ec0831756756d7f66c4f4ea0aae5267a6c' | gpg --dearmor | tee /etc/apt/keyrings/ppa_ondrej_php.gpg > /dev/null \
+    && echo "deb [signed-by=/etc/apt/keyrings/ppa_ondrej_php.gpg] https://ppa.launchpadcontent.net/ondrej/php/ubuntu noble main" > /etc/apt/sources.list.d/ppa_ondrej_php.list \
     && apt-get update \
     && apt-get -y --no-install-recommends install \
         sqlite3 \ 
@@ -44,6 +44,8 @@ RUN apt-get update \
         php7.2-sqlite3 \
         php7.2-soap \
         php7.2-xdebug \
+    && v=$(dpkg-query -W -f='${Version}' php7.2-cli) && echo "php7.2-cli $v" \
+    && dpkg --compare-versions "$v" ge "7.2.34-66" \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && composer global require --quiet --no-ansi laravel/envoy \
     && composer clear-cache --quiet \
