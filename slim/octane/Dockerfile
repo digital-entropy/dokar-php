@@ -17,7 +17,8 @@ RUN apk update \
         php83-dom php83-tokenizer php83-fileinfo \
         php83-mbstring php83-xml php83-zip php83-bcmath \
         php83-intl php83-ldap \
-        php83-pecl-igbinary php83-pecl-redis php83-pecl-swoole
+        php83-pecl-igbinary php83-pecl-redis php83-pecl-swoole \
+    && php83 -r 'printf("PHP runtime: %s\n", PHP_VERSION); exit(PHP_MAJOR_VERSION === 8 && PHP_MINOR_VERSION === 3 && version_compare(PHP_VERSION, "8.3.36", ">=") ? 0 : 42);'
     
 RUN apk add composer \
     && composer global require --quiet --no-ansi laravel/envoy \
