@@ -1,4 +1,5 @@
-FROM ghcr.io/digital-entropy/dokar-php/cli:7.4
+ARG BASE_IMAGE=ghcr.io/digital-entropy/dokar-php/cli:7.4
+FROM ${BASE_IMAGE}
 
 LABEL org.opencontainers.image.source https://github.com/digital-entropy/dokar-php/tree/7.4
 
@@ -6,6 +7,7 @@ LABEL org.opencontainers.image.source https://github.com/digital-entropy/dokar-p
 RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
     && apt-get -y --no-install-recommends install php7.4-fpm \
+    && v=$(dpkg-query -W -f='${Version}' php7.4-fpm) && dpkg --compare-versions "$v" ge "1:7.4.33-31" \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
