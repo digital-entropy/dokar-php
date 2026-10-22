@@ -1,6 +1,11 @@
 DOKAR PHP
 --- 
 
+> [!WARNING]
+> PHP 8.1 is end-of-life upstream. These images are built on Ubuntu 24.04 (noble) with the
+> [ondrej/php](https://launchpad.net/~ondrej/+archive/ubuntu/php) packages, which backport security fixes
+> (including CVE-2026-109618 and CVE-2026-109619, "PHP2Shell"). Upgrade to a supported PHP version when you can.
+
 There is 3 variant in this images.
 
 | Variant | Description | Usage |

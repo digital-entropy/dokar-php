@@ -2,13 +2,12 @@ FROM ghcr.io/digital-entropy/dokar-php/cli:8.1
 
 LABEL org.opencontainers.image.source https://github.com/digital-entropy/dokar-php
 
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4F4EA0AAE5267A6C \
-    && apt-get update \
+RUN apt-get update \
     && apt-get -y --no-install-recommends install \
         build-essential \
         php-pear \
     # octane use chokidar for --watch option so we need to install nodejs
-    && curl -sL https://deb.nodesource.com/setup_16.x | bash - \
+    && curl -sL https://deb.nodesource.com/setup_lts.x | bash - \
     && apt install nodejs -y \
     && npm install -g chokidar pnpm \
     && pecl channel-update https://pecl.php.net/channel.xml \
