@@ -91,3 +91,31 @@ jobs:
         env:
           IMAGE: ghcr.io/digital-entropy/dokar-php/nginx@${{ steps.build.outputs.digest }}
         run: bash .github/scripts/verify-image.sh "$IMAGE" "7.4" "1:7.4.33-31" "nginx"
+  promote:
+    needs: [build-cli, build-fpm, build-nginx]
+    if: github.ref == 'refs/heads/7.4'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: docker/setup-buildx-action@v4
+      - uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ secrets.GHCR_USR }}
+          password: ${{ secrets.GHCR_PAT }}
+      - name: Promote verified candidates to release tags
+        env:
+          REPO: ghcr.io/digital-entropy/dokar-php
+          CLI_DIGEST: ${{ needs.build-cli.outputs.digest }}
+          FPM_DIGEST: ${{ needs.build-fpm.outputs.digest }}
+          NGINX_DIGEST: ${{ needs.build-nginx.outputs.digest }}
+        run: |
+          set -euo pipefail
+          for entry in cli=$CLI_DIGEST fpm=$FPM_DIGEST nginx=$NGINX_DIGEST; do
+            name=${entry%%=*} digest=${entry#*=}
+            docker buildx imagetools create --tag "$REPO/$name:7.4" "$REPO/$name@$digest"
+            want=$(docker buildx imagetools inspect "$REPO/$name@$digest" --raw | jq -c '[.manifests[] | select(.platform.os == "linux") | .digest] | sort')
+            got=$(docker buildx imagetools inspect "$REPO/$name:7.4" --raw | jq -c '[.manifests[] | select(.platform.os == "linux") | .digest] | sort')
+            [ "$want" = "$got" ] || { echo "$name:7.4 does not match candidate $digest" >&2; exit 1; }
+            echo "$name:7.4 -> $digest $got"
+          done
