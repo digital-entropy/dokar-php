@@ -17,7 +17,8 @@ RUN apk update \
         php84-dom php84-tokenizer php84-fileinfo \
         php84-mbstring php84-xml php84-zip php84-bcmath \
         php84-intl php84-ldap \
-        php84-pecl-igbinary php84-pecl-redis php84-pecl-swoole
+        php84-pecl-igbinary php84-pecl-redis php84-pecl-swoole \
+    && php84 -r 'printf("PHP runtime: %s\n", PHP_VERSION); exit(PHP_MAJOR_VERSION === 8 && PHP_MINOR_VERSION === 4 && version_compare(PHP_VERSION, "8.4.27", ">=") ? 0 : 42);'
     
 RUN apk add composer \
     && composer global require --quiet --no-ansi laravel/envoy \
