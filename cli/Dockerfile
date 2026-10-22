@@ -1,4 +1,4 @@
-FROM alpine:3.20
+FROM alpine:3
 
 LABEL org.opencontainers.image.source=https://github.com/digital-entropy/dokar-php
 
@@ -16,6 +16,7 @@ RUN apk update \
       php83-mbstring php83-xml php83-zip php83-bcmath \
       php83-intl php83-ldap php83-pecl-igbinary php83-pecl-redis \
       composer \
+   && php83 -r 'printf("PHP runtime: %s\n", PHP_VERSION); exit(PHP_MAJOR_VERSION === 8 && PHP_MINOR_VERSION === 3 && version_compare(PHP_VERSION, "8.3.36", ">=") ? 0 : 42);' \
    && apk cache clean \
    && rm -rf /var/cache/apk/* /tmp/* /var/tmp/*
 
