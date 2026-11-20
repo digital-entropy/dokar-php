@@ -7,29 +7,33 @@ on:
     - cron: '0 0 1 * *'
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   build-cli:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       -
         name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       -
         name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+        uses: docker/setup-qemu-action@v4
       -
         name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
       -
         name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ secrets.GHCR_USR }}
           password: ${{ secrets.GHCR_PAT }}
       -
         name: Build and push
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: slim/cli/
           platforms: linux/amd64,linux/arm64
@@ -38,27 +42,27 @@ jobs:
 
   build-fpm:
     needs: build-cli
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       -
         name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       -
         name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+        uses: docker/setup-qemu-action@v4
       -
         name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
       -
         name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ secrets.GHCR_USR }}
           password: ${{ secrets.GHCR_PAT }}
       -
         name: Build and push
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: slim/fpm/
           platforms: linux/amd64,linux/arm64
@@ -66,27 +70,27 @@ jobs:
           tags: ghcr.io/digital-entropy/dokar-php/fpm:8.3-slim
 
   build-octane:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       -
         name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       -
         name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+        uses: docker/setup-qemu-action@v4
       -
         name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
       -
         name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ secrets.GHCR_USR }}
           password: ${{ secrets.GHCR_PAT }}
       -
         name: Build and push
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: slim/octane/
           platforms: linux/amd64,linux/arm64
@@ -95,27 +99,27 @@ jobs:
 
   build-nginx:
     needs: build-fpm
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       -
         name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       -
         name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+        uses: docker/setup-qemu-action@v4
       -
         name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
       -
         name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ secrets.GHCR_USR }}
           password: ${{ secrets.GHCR_PAT }}
       -
         name: Build and push
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: slim/nginx/
           platforms: linux/amd64,linux/arm64
