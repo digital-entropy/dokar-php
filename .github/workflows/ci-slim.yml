@@ -32,6 +32,17 @@ jobs:
           username: ${{ secrets.GHCR_USR }}
           password: ${{ secrets.GHCR_PAT }}
       -
+        name: Build amd64 for testing
+        uses: docker/build-push-action@v7
+        with:
+          context: slim/cli/
+          platforms: linux/amd64
+          load: true
+          tags: dokar-slim-test:cli
+      -
+        name: Smoke test
+        run: sh .github/scripts/slim-smoke.sh cli dokar-slim-test:cli 8.4 8.4.28
+      -
         name: Build and push
         uses: docker/build-push-action@v7
         with:
@@ -61,6 +72,17 @@ jobs:
           username: ${{ secrets.GHCR_USR }}
           password: ${{ secrets.GHCR_PAT }}
       -
+        name: Build amd64 for testing
+        uses: docker/build-push-action@v7
+        with:
+          context: slim/fpm/
+          platforms: linux/amd64
+          load: true
+          tags: dokar-slim-test:fpm
+      -
+        name: Smoke test
+        run: sh .github/scripts/slim-smoke.sh fpm dokar-slim-test:fpm 8.4 8.4.28
+      -
         name: Build and push
         uses: docker/build-push-action@v7
         with:
@@ -88,6 +110,17 @@ jobs:
           registry: ghcr.io
           username: ${{ secrets.GHCR_USR }}
           password: ${{ secrets.GHCR_PAT }}
+      -
+        name: Build amd64 for testing
+        uses: docker/build-push-action@v7
+        with:
+          context: slim/octane/
+          platforms: linux/amd64
+          load: true
+          tags: dokar-slim-test:octane
+      -
+        name: Smoke test
+        run: sh .github/scripts/slim-smoke.sh octane dokar-slim-test:octane 8.4 8.4.28
       -
         name: Build and push
         uses: docker/build-push-action@v7
@@ -117,6 +150,17 @@ jobs:
           registry: ghcr.io
           username: ${{ secrets.GHCR_USR }}
           password: ${{ secrets.GHCR_PAT }}
+      -
+        name: Build amd64 for testing
+        uses: docker/build-push-action@v7
+        with:
+          context: slim/nginx/
+          platforms: linux/amd64
+          load: true
+          tags: dokar-slim-test:nginx
+      -
+        name: Smoke test
+        run: sh .github/scripts/slim-smoke.sh nginx dokar-slim-test:nginx 8.4 8.4.28
       -
         name: Build and push
         uses: docker/build-push-action@v7
