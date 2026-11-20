@@ -1,8 +1,8 @@
 FROM ubuntu:jammy
 
-LABEL org.opencontainers.image.source https://github.com/digital-entropy/dokar-php
+LABEL org.opencontainers.image.source=https://github.com/digital-entropy/dokar-php
 
-ENV DEBIAN_FRONTEND noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
 
 ENV TERM=linux
 
@@ -28,7 +28,7 @@ RUN printf '%s\n' 'Acquire::Retries "5";' 'Acquire::Retries::Delay "true";' 'Acq
        php8.2-xml php8.2-zip php8.2-bcmath php8.2-soap \
        php8.2-intl php8.2-readline \
        php8.2-ldap php8.2-redis php8.2-igbinary \
-    && php8.2 -r 'printf("PHP runtime: %s\n", PHP_VERSION); exit(PHP_MAJOR_VERSION === 8 && PHP_MINOR_VERSION === 2 && version_compare(PHP_VERSION, "8.2.35", ">=") ? 0 : 42);' \
+    && php8.2 -r 'printf("PHP runtime: %s\n", PHP_VERSION); exit(PHP_MAJOR_VERSION === 8 && PHP_MINOR_VERSION === 2 && version_compare(PHP_VERSION, "8.2.36", ">=") ? 0 : 42);' \
     && php8.2 -r 'if (PHP_MAJOR_VERSION . "." . PHP_MINOR_VERSION !== "8.2") exit(42); foreach (["redis","igbinary","curl","mbstring","PDO","pdo_mysql","pdo_pgsql","sqlite3","gd","soap","zip","dom"] as $e) { if (!extension_loaded($e)) { fwrite(STDERR,"Missing $e\n"); exit(43); } }' \
     && curl -fsS --retry 5 https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && composer global require --quiet --no-ansi laravel/envoy \

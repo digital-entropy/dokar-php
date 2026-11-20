@@ -1,7 +1,7 @@
 ARG BASE_IMAGE=ghcr.io/digital-entropy/dokar-php/fpm:8.2
 FROM ${BASE_IMAGE}
 
-LABEL org.opencontainers.image.source https://github.com/digital-entropy/dokar-php
+LABEL org.opencontainers.image.source=https://github.com/digital-entropy/dokar-php
 
 RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
@@ -22,11 +22,11 @@ COPY supervisor /etc/supervisor
 
 # Add a non-root user to prevent files being created with root permissions on host machine.
 ONBUILD ARG USER_CONTAINER=dokar
-ONBUILD ENV USER_CONTAINER ${USER_CONTAINER}
+ONBUILD ENV USER_CONTAINER=${USER_CONTAINER}
 ONBUILD ARG PUID=1000
-ONBUILD ENV PUID ${PUID}
+ONBUILD ENV PUID=${PUID}
 ONBUILD ARG PGID=1000
-ONBUILD ENV PGID ${PGID}
+ONBUILD ENV PGID=${PGID}
 
 ONBUILD RUN if ! grep -q $PGID /etc/group; then groupadd -g ${PGID} ${USER_CONTAINER}; fi && \
     useradd --gid ${PGID} --uid ${PUID} -m ${USER_CONTAINER}
@@ -38,4 +38,4 @@ EXPOSE 80
 
 STOPSIGNAL SIGTERM
 
-CMD /usr/bin/supervisord -n -c /etc/supervisor/supervisord.conf
+CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/supervisord.conf"]

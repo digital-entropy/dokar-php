@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   build-cli:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 90
     outputs:
       digest: ${{ steps.build.outputs.digest }}
@@ -34,10 +34,10 @@ jobs:
       - name: Verify published candidate on both architectures
         env:
           IMAGE: ghcr.io/digital-entropy/dokar-php/cli@${{ steps.build.outputs.digest }}
-        run: bash .github/scripts/verify-image.sh "$IMAGE" "8.2" "8.2.35-1" "cli"
+        run: bash .github/scripts/verify-image.sh "$IMAGE" "8.2" "8.2.36" "cli"
   build-fpm:
     needs: build-cli
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 90
     outputs:
       digest: ${{ steps.build.outputs.digest }}
@@ -62,10 +62,10 @@ jobs:
       - name: Verify published candidate on both architectures
         env:
           IMAGE: ghcr.io/digital-entropy/dokar-php/fpm@${{ steps.build.outputs.digest }}
-        run: bash .github/scripts/verify-image.sh "$IMAGE" "8.2" "8.2.35-1" "fpm"
+        run: bash .github/scripts/verify-image.sh "$IMAGE" "8.2" "8.2.36" "fpm"
   build-nginx:
     needs: build-fpm
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 90
     outputs:
       digest: ${{ steps.build.outputs.digest }}
@@ -90,10 +90,10 @@ jobs:
       - name: Verify published candidate on both architectures
         env:
           IMAGE: ghcr.io/digital-entropy/dokar-php/nginx@${{ steps.build.outputs.digest }}
-        run: bash .github/scripts/verify-image.sh "$IMAGE" "8.2" "8.2.35-1" "nginx"
+        run: bash .github/scripts/verify-image.sh "$IMAGE" "8.2" "8.2.36" "nginx"
   build-octane:
     needs: build-cli
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 90
     outputs:
       digest: ${{ steps.build.outputs.digest }}
@@ -118,11 +118,11 @@ jobs:
       - name: Verify published candidate on both architectures
         env:
           IMAGE: ghcr.io/digital-entropy/dokar-php/octane@${{ steps.build.outputs.digest }}
-        run: bash .github/scripts/verify-image.sh "$IMAGE" "8.2" "8.2.35-1" "octane"
+        run: bash .github/scripts/verify-image.sh "$IMAGE" "8.2" "8.2.36" "octane"
   promote:
     needs: [build-cli, build-fpm, build-nginx, build-octane]
     if: github.ref == 'refs/heads/8.2'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - uses: docker/setup-buildx-action@v4
