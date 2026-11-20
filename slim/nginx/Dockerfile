@@ -1,15 +1,12 @@
-FROM ghcr.io/digital-entropy/dokar-php/fpm:8.3-slim
+ARG BASE_IMAGE=ghcr.io/digital-entropy/dokar-php/fpm:8.3-slim
+FROM ${BASE_IMAGE}
 
 LABEL org.opencontainers.image.source=https://github.com/digital-entropy/dokar-php
 LABEL org.opencontainers.image.branch=8.3
 
-RUN apk update \
-    && apk add nginx supervisor \ 
-    && apk cache clean \
-    && rm -rf /var/cache/apk/* /tmp/* /var/tmp/* \
-    && rm /etc/nginx/http.d/*
-
-RUN mkdir -p /var/www/public
+RUN apk add --no-cache nginx supervisor \
+    && rm -f /etc/nginx/http.d/* \
+    && mkdir -p /var/log/supervisor /run/nginx /var/www/public
 
 COPY index.php /var/www/public
 
@@ -18,6 +15,8 @@ WORKDIR /var/www
 COPY site.conf /etc/nginx/http.d/site.conf
 
 COPY supervisor /etc/supervisor
+
+RUN nginx -t
 
 # Add a non-root user to prevent files being created with root permissions on host machine.
 ONBUILD ARG USER_CONTAINER=dokar
