@@ -7,9 +7,13 @@ on:
     - cron: '0 0 1 * *'
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   build-cli:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       -
         name: Checkout
@@ -38,7 +42,7 @@ jobs:
 
   build-fpm:
     needs: build-cli
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       -
         name: Checkout
@@ -66,7 +70,7 @@ jobs:
           tags: ghcr.io/digital-entropy/dokar-php/fpm:8.5-slim
 
   build-octane:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       -
         name: Checkout
@@ -95,7 +99,7 @@ jobs:
 
   build-nginx:
     needs: build-fpm
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       -
         name: Checkout
