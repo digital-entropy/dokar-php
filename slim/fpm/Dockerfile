@@ -1,18 +1,15 @@
-FROM ghcr.io/digital-entropy/dokar-php/cli:8.5-slim
+ARG BASE_IMAGE=ghcr.io/digital-entropy/dokar-php/cli:8.5-slim
+FROM ${BASE_IMAGE}
 
 LABEL org.opencontainers.image.source=https://github.com/digital-entropy/dokar-php
 LABEL org.opencontainers.image.branch=8.5
 
-# Install FPM
-RUN apk update \
-    && apk add php85-fpm \
-    && apk cache clean \
-    && rm -rf /var/cache/apk/* /tmp/* /var/tmp/*
-
-# PHP-FPM packages need a nudge to make them docker-friendly
-COPY overrides.conf /etc/php/8.5/fpm/pool.d/z-overrides.conf
-
-# PHP-FPM has really dirty logs, certainly not good for dockerising
-# The following startup script contains some magic to clean these up
+# PHP-FPM packages need a nudge to make them docker-friendly (Alpine reads /etc/php85/php-fpm.d)
+COPY overrides.conf /etc/php85/php-fpm.d/z-overrides.conf
 COPY php-fpm-startup /usr/bin/php-fpm
+
+RUN apk add --no-cache php85-fpm \
+    && chmod 755 /usr/bin/php-fpm \
+    && /usr/sbin/php-fpm85 -t
+
 CMD ["/usr/bin/php-fpm"]
