@@ -13,7 +13,7 @@ concurrency:
 
 jobs:
   build-cli:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       -
         name: Checkout
@@ -42,7 +42,7 @@ jobs:
 
   build-fpm:
     needs: build-cli
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       -
         name: Checkout
@@ -70,7 +70,7 @@ jobs:
           tags: ghcr.io/digital-entropy/dokar-php/fpm:8.5
 
   build-octane:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       -
         name: Checkout
@@ -99,7 +99,7 @@ jobs:
 
   build-nginx:
     needs: build-fpm
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       -
         name: Checkout
