@@ -1,7 +1,7 @@
-FROM ubuntu:noble
+FROM ubuntu:resolute
 
 LABEL org.opencontainers.image.source=https://github.com/digital-entropy/dokar-php
-LABEL org.opencontainers.image.branch=8.5
+LABEL org.opencontainers.image.branch=8.6
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -31,15 +31,15 @@ RUN apt-get update \
     && test "$(gpg --show-keys --with-colons /usr/share/keyrings/debsuryorg-archive-keyring.gpg | awk -F: '$1=="pub"{getline; print $10}')" = "15058500A0235D97F5D10063B188E2B695BD4743" \
     && printf '%s\n' 'Types: deb' 'URIs: https://packages.sury.org/php/' "Suites: $(. /etc/os-release && echo "$VERSION_CODENAME")" 'Components: main' 'Signed-By: /usr/share/keyrings/debsuryorg-archive-keyring.gpg' > /etc/apt/sources.list.d/debsuryorg-php.sources \
     && apt-get update \
-    && apt-get install -y php8.5-cli php8.5-dev \
-       php8.5-pgsql php8.5-sqlite3 php8.5-gd \
-       php8.5-curl \
-       php8.5-imap php8.5-mysql php8.5-mbstring \
-       php8.5-xml php8.5-zip php8.5-bcmath php8.5-soap \
-       php8.5-intl php8.5-readline \
-       php8.5-ldap php8.5-redis php8.5-igbinary \
-    && php8.5 -r 'foreach (["redis","igbinary"] as $ext) { if (!extension_loaded($ext)) { fwrite(STDERR, "Missing extension: $ext\n"); exit(1); } printf("%s=%s\n", $ext, phpversion($ext)); }' \
-    && php8.5 -r 'printf("PHP runtime: %s\n", PHP_VERSION); exit(PHP_MAJOR_VERSION === 8 && PHP_MINOR_VERSION === 5 && version_compare(PHP_VERSION, "8.5.13", ">=") ? 0 : 42);' \
+    && apt-get install -y php8.6-cli php8.6-dev \
+       php8.6-pgsql php8.6-sqlite3 php8.6-gd \
+       php8.6-curl \
+       php8.6-imap php8.6-mysql php8.6-mbstring \
+       php8.6-xml php8.6-zip php8.6-bcmath php8.6-soap \
+       php8.6-intl php8.6-readline \
+       php8.6-ldap php8.6-redis php8.6-igbinary \
+    && php8.6 -r 'foreach (["redis","igbinary"] as $ext) { if (!extension_loaded($ext)) { fwrite(STDERR, "Missing extension: $ext\n"); exit(1); } printf("%s=%s\n", $ext, phpversion($ext)); }' \
+    && php8.6 -r 'printf("PHP runtime: %s\n", PHP_VERSION); exit(PHP_MAJOR_VERSION === 8 && PHP_MINOR_VERSION === 6 && version_compare(PHP_VERSION, "8.6.0", ">=") ? 0 : 42);' \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && composer global require --quiet --no-ansi laravel/envoy \
     && composer clear-cache --quiet \
