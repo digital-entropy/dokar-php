@@ -1,16 +1,32 @@
-DOKAR PHP
---- 
+# Dokar PHP
 
-PHP 8.4 of dokar-php
+PHP **8.4** images on Ubuntu 24.04 (`noble`), from branch `8.4`.
 
-### There are 4 flavors in this image
+## Flavors
 
-| Flavor | Description | Usage |
-| --- | --- | --- | 
-| Only CLI | Provide only php-cli. This image can be useful to run such as `laravel-horizon, laravel-websocket, tinker`. | `docker pull ghcr.io/digital-entropy/dokar-php/cli:8.4` |
-| Only PHP-FPM | Provide php-fpm from php-cli. This image listen on `fastcgi 0.0.0.0:9008`. | `docker pull ghcr.io/digital-entropy/dokar-php/fpm:8.4` |
-| With Nginx | Production ready php image that use nginx as web server. This image will serve `/var/www/public` directory.   | `docker pull ghcr.io/digital-entropy/dokar-php/nginx:8.4` |
-Octane | Crafted for running octane with `swoole` driver. use `DOCKER_WORKERS=` env to define specific worker you need.| `docker pull ghcr.io/digital-entropy/dokar-php/octane:8.4`
+| Flavor | Description | Pull |
+|---|---|---|
+| CLI | PHP CLI with common extensions and Composer. Useful for Horizon, queue workers, schedulers and Tinker. | `docker pull ghcr.io/digital-entropy/dokar-php/cli:8.4` |
+| PHP-FPM | PHP-FPM on top of the CLI image, listening on `fastcgi 0.0.0.0:9008`. | `docker pull ghcr.io/digital-entropy/dokar-php/fpm:8.4` |
+| Nginx | Production-ready image with Nginx + PHP-FPM, serving `/var/www/public`. | `docker pull ghcr.io/digital-entropy/dokar-php/nginx:8.4` |
+| Octane | Laravel Octane with the Swoole driver (built from source) and Node.js LTS. Set `DOCKER_WORKERS=` to choose workers. | `docker pull ghcr.io/digital-entropy/dokar-php/octane:8.4` |
 
-> Dokar PHP by default is using Ubuntu image, but we also provide Alpine image.
-> You can add `-slim` in tag to use Alpine based image. e.g., `docker pull ghcr.io/digital-entropy/dokar-php/octane:8.4-slim` 
+Alpine-based images are available by adding `-slim` to the tag, e.g. `docker pull ghcr.io/digital-entropy/dokar-php/octane:8.4-slim`.
+
+## Branches
+
+| Branch | PHP | Base | Tags |
+|---|---|---|---|
+| `main` | 8.6 | Ubuntu 26.04 | `cli:8.6` `fpm:8.6` `nginx:8.6` (no octane / slim yet) |
+| `8.5` | 8.5 | Ubuntu 24.04 | `*:8.5`, `*:8.5-slim` |
+| `8.4` | 8.4 | Ubuntu 24.04 | `*:8.4`, `*:8.4-slim` |
+| `8.3` | 8.3 | Ubuntu 24.04 | `*:8.3`, `*:8.3-slim` |
+| `8.2` | 8.2 | Ubuntu 22.04 | `*:8.2` |
+
+## How the images are built
+
+- PHP comes from Ondřej Surý's repository at **packages.sury.org** (not the retired Launchpad PPA). The build checks the repository signing key fingerprint and fails if it does not match.
+- Every build fails if the installed PHP is older than the latest security release for its branch, so a stale mirror never publishes a vulnerable image.
+- PECL and php-pear are not included. To use Xdebug in a development image, install `php<ver>-xdebug` with `apt-get`.
+
+Maintainer documentation (branch model, security release procedure, CI, known gaps): [docs/MAINTAINING.md](https://github.com/digital-entropy/dokar-php/blob/main/docs/MAINTAINING.md).
