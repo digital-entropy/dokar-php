@@ -1,22 +1,25 @@
+# syntax=docker/dockerfile:1.10
 ARG BASE_IMAGE=ghcr.io/digital-entropy/dokar-php/cli:8.2
 FROM ${BASE_IMAGE}
 
 LABEL org.opencontainers.image.source=https://github.com/digital-entropy/dokar-php
 
-# Swoole is built from the latest stable upstream tag; pin with --build-arg SWOOLE_VERSION=vX.Y.Z
-ARG SWOOLE_VERSION=latest
-RUN apt-get update \
+# Swoole is installed with PIE (github.com/php/pie) from the swoole/swoole package: the newest stable
+# release that supports this PHP. Pin with --build-arg SWOOLE_VERSION=6.3.0 (any Composer constraint).
+# PIE downloads the source through the GitHub API; CI passes GITHUB_TOKEN as a build secret so the
+# unauthenticated rate limit (60 requests/hour per IP) cannot break builds. It is never stored in the image.
+ARG SWOOLE_VERSION=
+ARG PIE_VERSION=1.6.1
+ARG PIE_SHA256=e99400532e25cd3b65cb7b6688df93c9296a689f01bb0a4471869a3cbbac83ba
+RUN --mount=type=secret,id=github_token,env=GITHUB_TOKEN,required=false apt-get update \
     && apt-get install -y --no-install-recommends build-essential libbrotli-dev \
-    && SWOOLE_TAG="${SWOOLE_VERSION}" \
-    && if [ "${SWOOLE_TAG}" = "latest" ]; then SWOOLE_TAG="$(git ls-remote --tags --refs https://github.com/swoole/swoole-src.git 'v*' | sed 's#.*refs/tags/##' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -n 1)"; fi \
-    && test -n "${SWOOLE_TAG}" \
-    && echo "Building Swoole ${SWOOLE_TAG} from source" \
-    && mkdir -p /tmp/swoole-src \
-    && curl -fsSL --retry 5 --connect-timeout 15 --max-time 300 "https://github.com/swoole/swoole-src/archive/refs/tags/${SWOOLE_TAG}.tar.gz" | tar -xz -C /tmp/swoole-src --strip-components=1 \
-    && (cd /tmp/swoole-src && phpize8.2 && ./configure --with-php-config=/usr/bin/php-config8.2 --enable-openssl --enable-brotli && make -j"$(nproc)" && make install) \
-    && echo "extension=swoole.so" > /etc/php/8.2/cli/conf.d/20-swoole.ini \
-    && SWOOLE_EXPECTED="${SWOOLE_TAG#v}" php8.2 -r 'if (phpversion("swoole") !== getenv("SWOOLE_EXPECTED")) { fwrite(STDERR, "Unexpected swoole version\n"); exit(42); }' \
+    && curl -fsSL --retry 5 -o /usr/local/bin/pie "https://github.com/php/pie/releases/download/${PIE_VERSION}/pie.phar" \
+    && echo "${PIE_SHA256}  /usr/local/bin/pie" | sha256sum -c - \
+    && chmod 755 /usr/local/bin/pie \
+    && pie install --with-php-config=/usr/bin/php-config8.2 "swoole/swoole${SWOOLE_VERSION:+:${SWOOLE_VERSION}}" --enable-brotli \
+    && php8.2 -r 'printf("swoole=%s\n", phpversion("swoole")); exit(version_compare(phpversion("swoole") ?: "0", "6.3.0", ">=") ? 0 : 42);' \
     && php8.2 --ri swoole | grep -E '^(openssl|http2|brotli|zlib) =>' | wc -l | grep -qx 4 \
+    && rm -rf /root/.config/pie \
     && mkdir -p /etc/apt/keyrings \
     && curl -fsSL --retry 5 https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
     && printf '%s\n' 'deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_26.x nodistro main' > /etc/apt/sources.list.d/nodesource.list \
