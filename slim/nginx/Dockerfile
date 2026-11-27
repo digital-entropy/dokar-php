@@ -1,8 +1,8 @@
-ARG BASE_IMAGE=ghcr.io/digital-entropy/dokar-php/fpm:8.6-slim
+ARG BASE_IMAGE=ghcr.io/digital-entropy/dokar-php/fpm:8.5-slim
 FROM ${BASE_IMAGE}
 
 LABEL org.opencontainers.image.source=https://github.com/digital-entropy/dokar-php
-LABEL org.opencontainers.image.branch=8.6
+LABEL org.opencontainers.image.branch=8.5
 
 RUN apk add --no-cache nginx supervisor \
     && rm -f /etc/nginx/http.d/* \

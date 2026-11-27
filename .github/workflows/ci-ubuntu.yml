@@ -38,7 +38,7 @@ jobs:
           context: ubuntu/cli/
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ghcr.io/digital-entropy/dokar-php/cli:8.6
+          tags: ghcr.io/digital-entropy/dokar-php/cli:8.5
 
   build-fpm:
     needs: build-cli
@@ -67,13 +67,9 @@ jobs:
           context: ubuntu/fpm/
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ghcr.io/digital-entropy/dokar-php/fpm:8.6
+          tags: ghcr.io/digital-entropy/dokar-php/fpm:8.5
 
   build-octane:
-    # octane:8.6 is NOT published yet: no Swoole release compiles against PHP 8.6
-    # (v6.2.6, v6.3.0-rc2 and master all #error on PHP_VERSION_ID >= 80600; checked 2026-11-23).
-    # Remove this line once a stable Swoole supports 8.6. See docs/MAINTAINING.md.
-    if: ${{ false }}
     runs-on: ubuntu-26.04
     steps:
       -
@@ -99,7 +95,7 @@ jobs:
           context: ubuntu/octane/
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ghcr.io/digital-entropy/dokar-php/octane:8.6
+          tags: ghcr.io/digital-entropy/dokar-php/octane:8.5
 
   build-nginx:
     needs: build-fpm
@@ -128,4 +124,4 @@ jobs:
           context: ubuntu/nginx/
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ghcr.io/digital-entropy/dokar-php/nginx:8.6
+          tags: ghcr.io/digital-entropy/dokar-php/nginx:8.5
