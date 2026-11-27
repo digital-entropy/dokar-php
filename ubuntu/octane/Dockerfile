@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1.10
 FROM ubuntu:noble
 
 LABEL org.opencontainers.image.source=https://github.com/digital-entropy/dokar-php
@@ -14,11 +15,16 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 # Fail closed on missing repository indexes; retry transient downloads with backoff.
 RUN printf '%s\n' 'Acquire::Retries "5";' 'Acquire::Retries::Delay "true";' 'Acquire::Retries::Delay::Maximum "30";' 'Acquire::http::Timeout "30";' 'Acquire::https::Timeout "30";' 'APT::Update::Error-Mode "any";' > /etc/apt/apt.conf.d/80-download-resilience
 
-# Swoole is built from the latest stable upstream tag; pin with --build-arg SWOOLE_VERSION=vX.Y.Z
-ARG SWOOLE_VERSION=latest
+# Swoole is installed with PIE (github.com/php/pie) from the swoole/swoole package: the newest stable
+# release that supports this PHP. Pin with --build-arg SWOOLE_VERSION=6.3.0 (any Composer constraint).
+# PIE downloads the source through the GitHub API; CI passes GITHUB_TOKEN as a build secret so the
+# unauthenticated rate limit (60 requests/hour per IP) cannot break builds. It is never stored in the image.
+ARG SWOOLE_VERSION=
+ARG PIE_VERSION=1.6.1
+ARG PIE_SHA256=e99400532e25cd3b65cb7b6688df93c9296a689f01bb0a4471869a3cbbac83ba
 # PHP comes from packages.sury.org (Ondrej Sury's repo; the Launchpad PPA is being retired).
 # The keyring is extracted, not installed, and its single primary key must match the published fingerprint.
-RUN apt-get update \
+RUN --mount=type=secret,id=github_token,env=GITHUB_TOKEN,required=false apt-get update \
     && apt-get install -y --no-install-recommends gnupg gosu curl ca-certificates zip unzip git sqlite3 libcap2-bin libpng-dev build-essential libbrotli-dev \
     && mkdir -p ~/.gnupg \
     && chmod 600 ~/.gnupg \
@@ -41,16 +47,13 @@ RUN apt-get update \
        php8.5-intl php8.5-readline \
        php8.5-ldap php8.5-redis php8.5-igbinary \
     && php8.5 -r 'printf("PHP runtime: %s\n", PHP_VERSION); exit(PHP_MAJOR_VERSION === 8 && PHP_MINOR_VERSION === 5 && version_compare(PHP_VERSION, "8.5.13", ">=") ? 0 : 42);' \
-    && SWOOLE_TAG="${SWOOLE_VERSION}" \
-    && if [ "${SWOOLE_TAG}" = "latest" ]; then SWOOLE_TAG="$(git ls-remote --tags --refs https://github.com/swoole/swoole-src.git 'v*' | sed 's#.*refs/tags/##' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -n 1)"; fi \
-    && test -n "${SWOOLE_TAG}" \
-    && echo "Building Swoole ${SWOOLE_TAG} from source" \
-    && mkdir -p /tmp/swoole-src \
-    && curl -fsSL --retry 5 --connect-timeout 15 --max-time 300 "https://github.com/swoole/swoole-src/archive/refs/tags/${SWOOLE_TAG}.tar.gz" | tar -xz -C /tmp/swoole-src --strip-components=1 \
-    && (cd /tmp/swoole-src && phpize8.5 && ./configure --with-php-config=/usr/bin/php-config8.5 --enable-openssl --enable-brotli && make -j"$(nproc)" && make install) \
-    && echo "extension=swoole.so" > /etc/php/8.5/cli/conf.d/20-swoole.ini \
-    && SWOOLE_EXPECTED="${SWOOLE_TAG#v}" php8.5 -r 'if (phpversion("swoole") !== getenv("SWOOLE_EXPECTED")) { fwrite(STDERR, "Unexpected swoole version\n"); exit(42); }' \
+    && curl -fsSL --retry 5 -o /usr/local/bin/pie "https://github.com/php/pie/releases/download/${PIE_VERSION}/pie.phar" \
+    && echo "${PIE_SHA256}  /usr/local/bin/pie" | sha256sum -c - \
+    && chmod 755 /usr/local/bin/pie \
+    && pie install --with-php-config=/usr/bin/php-config8.5 "swoole/swoole${SWOOLE_VERSION:+:${SWOOLE_VERSION}}" --enable-brotli \
+    && php8.5 -r 'printf("swoole=%s\n", phpversion("swoole")); exit(version_compare(phpversion("swoole") ?: "0", "6.3.0", ">=") ? 0 : 42);' \
     && php8.5 --ri swoole | grep -E '^(openssl|http2|brotli|zlib) =>' | wc -l | grep -qx 4 \
+    && rm -rf /root/.config/pie \
     && php8.5 -r 'foreach (["redis","igbinary","swoole"] as $ext) { if (!extension_loaded($ext)) { fwrite(STDERR, "Missing extension: $ext\n"); exit(1); } printf("%s=%s\n", $ext, phpversion($ext)); }' \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && composer global require --quiet --no-ansi laravel/envoy \
